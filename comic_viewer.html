@@ -5,14 +5,17 @@
     <script type="text/javascript">
       // グローバル変数
       let viewerCanvas, viewerCanvasContext, windowWidth, windowHeight, currentComicPageIndex;
+      // ビューワの余白です．画像サイズによって異なると思います
       let viewerPadding = {top: 0, left: 0, width: 0, height: 0};
 
       let comicPages = [
         {
-          imagePath: "comic_pages/page0.jpg",
-          image: null,
+          imagePath: "comic_pages/page0.jpg", // 漫画の画像のパス
+          image: null, // 画像を扱う際に「画像オブジェクト」としてデータを保持する必要があるので変数を作っておく
           frames: [
             {
+              soundPath: "ガクガク…の音のファイルパス", // 音声のパス
+              sound: null, // 音声を扱う際に「画像オブジェクト」としてデータを保持する必要があるので変数を作っておく
               points: [
                 { x: 83.1, y: 4 },
                 { x: 98.9, y: 4 },
@@ -21,6 +24,8 @@
               ]
             },
             {
+              soundPath: null,
+              sound: null,
               points: [
                 { x: 52, y: 4 },
                 { x: 82.6, y: 4 },
@@ -29,6 +34,8 @@
               ]
             },
             {
+              soundPath: "プチンの音のファイルパス",
+              sound: null,
               points: [
                 { x: 52, y: 29.5 },
                 { x: 98.9, y: 29.5 },
@@ -37,6 +44,8 @@
               ]
             },
             {
+              soundPath: "ゾワッの音のファイルパス",
+              sound: null,
               points: [
                 { x: 77.5, y: 48.5 },
                 { x: 98.9, y: 48.5 },
@@ -45,6 +54,8 @@
               ]
             },
             {
+              soundPath: null,
+              sound: null,
               points: [
                 { x: 52, y: 49 },
                 { x: 77, y: 49 },
@@ -53,6 +64,8 @@
               ]
             },
             {
+              soundPath: null,
+              sound: null,
               points: [
                 { x: 52, y: 67 },
                 { x: 77, y: 67 },
@@ -61,6 +74,8 @@
               ]
             },
             {
+              soundPath: "ズゥゥ…ンの音のファイルパス",
+              sound: null,
               points: [
                 { x: 1, y: 4 },
                 { x: 48, y: 4 },
@@ -155,7 +170,9 @@
             frameIndex = i;
         }
 
-        if (frameIndex != -1) console.log(frameIndex)
+        if (frameIndex != -1) {
+          // コマに重なっている場合はframeIndexがコマのIDになってます
+        }
 
       };
 
@@ -176,6 +193,7 @@
         window.addEventListener("mousemove", looking);
 
         // 漫画の0ページ目をロードして描写する
+        // 音声もここで1ページ分まとめてロードするといいんじゃないかと思います
         currentComicPageIndex = 0;
         loadAndShowComicPage(comicPages[currentComicPageIndex]);
 
