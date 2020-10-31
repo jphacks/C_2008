@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Comic Viewer</title>
+    <!--<script type="text/javascript" src="./webgazer.js"></script>//-->
     <script type="text/javascript">
       // グローバル変数
       let viewerCanvas, viewerCanvasContext, windowWidth, windowHeight, currentComicPageIndex;
@@ -112,7 +113,7 @@
           viewerPadding.left, viewerPadding.top, viewerPadding.width, viewerPadding.height);
 
         // コマを薄く表示する
-        viewerCanvasContext.fillStyle = '#0000cd40';
+        viewerCanvasContext.fillStyle = '#0000cd10';
         for (let i=0;i<comicPage.frames.length;i++) {
           const frame = comicPage.frames[i];
 
@@ -175,8 +176,26 @@
         window.addEventListener("mousemove", looking);
 
         // 漫画の0ページ目をロードして描写する
-        currentComicPageIndex = 0
-        loadAndShowComicPage(comicPages[currentComicPageIndex])
+        currentComicPageIndex = 0;
+        loadAndShowComicPage(comicPages[currentComicPageIndex]);
+
+        /*
+        webgazer.params.showVideoPreview = true;
+        webgazer.setRegression('ridge').setTracker('TFFacemesh').setGazeListener(function(data, elapsedTime) {
+            if (data == null) {
+              return;
+            }
+            console.log(data.x, data.y);
+          }).begin();
+        webgazer.showPredictionPoints(true);
+
+        let canvas = document.getElementById("plotting_canvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.applyKalmanFilter = true;
+        window.saveDataAcrossSessions = false;
+        */
 
       };
     </script>
@@ -195,5 +214,6 @@
   <div class="viewer">
     <canvas id="viewerCanvas"></canvas>
   </div>
+  <!--<canvas id="plotting_canvas" class="viewer"></canvas>//-->
   </body>
 </html>
