@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>FaceMesh</title>
+    <script src="https://unpkg.com/@tensorflow/tfjs-core@2.1.0/dist/tf-core.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-converter@2.1.0/dist/tf-converter.js"></script>
+    <script src="https://unpkg.com/@tensorflow-models/facemesh@0.0.5/dist/facemesh.min.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs-backend-wasm@2.1.0/dist/tf-backend-wasm.js"></script>
+    <script type="text/javascript">
+
+      window.onload = () => { // ロード時に発火する
+        tf.setBackend('wasm').then(() => { // backendとしてwasmを準備して，準備が終わったら発火する
+          facemesh.load().then((model) => { // facemeshのモデルを読み込み，読み込みが終わったら発火する
+            // let video = document.getElementById("video") // ビデオのDOM(HTMLタグ)をIDを使って取得する．
+            // model.estimateFaces(video) // videoのデータを渡してあげると推定してくれるらしい（もうちょっと試したい）
+          })
+        })
+      }
+    </script>
+  </head>
+  <body>
+    <video id="video" width="320" height="240"></video>
+  </body>
+</html>
