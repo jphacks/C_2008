@@ -10,6 +10,7 @@ const Reguression = {
   },
   predict: (input) => { // 予測関数（inputは10*6次元のベクトル）
     // input[10]...入力の10番目の数値
+    return [0, 0]
   }
 }
 
@@ -60,4 +61,5 @@ predictInput = [
 ]
 
 // 予測する
-Reguression.predict(predictInput)
+result = Reguression.predict(predictInput)
+console.log(result)
