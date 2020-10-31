@@ -1,8 +1,199 @@
 <html>
   <head>
     <title>Comic Viewer</title>
+    <script type="text/javascript">
+      // グローバル変数
+      let viewerCanvas, viewerCanvasContext, windowWidth, windowHeight, currentComicPageIndex;
+      let viewerPadding = {top: 0, left: 0, width: 0, height: 0};
+
+      let comicPages = [
+        {
+          imagePath: "comic_pages/page0.jpg",
+          image: null,
+          frames: [
+            {
+              points: [
+                { x: 83.1, y: 4 },
+                { x: 98.9, y: 4 },
+                { x: 98.9, y: 25.2 },
+                { x: 83.1, y: 25.2 },
+              ]
+            },
+            {
+              points: [
+                { x: 52, y: 4 },
+                { x: 82.6, y: 4 },
+                { x: 82.6, y: 25.2 },
+                { x: 52, y: 25.2 },
+              ]
+            },
+            {
+              points: [
+                { x: 52, y: 29.5 },
+                { x: 98.9, y: 29.5 },
+                { x: 98.9, y: 45 },
+                { x: 52, y: 45 },
+              ]
+            },
+            {
+              points: [
+                { x: 77.5, y: 48.5 },
+                { x: 98.9, y: 48.5 },
+                { x: 98.9, y: 97.5 },
+                { x: 77.5, y: 97.5 },
+              ]
+            },
+            {
+              points: [
+                { x: 52, y: 49 },
+                { x: 77, y: 49 },
+                { x: 77, y: 63.2 },
+                { x: 52, y: 63.2 },
+              ]
+            },
+            {
+              points: [
+                { x: 52, y: 67 },
+                { x: 77, y: 67 },
+                { x: 77, y: 97.5 },
+                { x: 52, y: 97.5 },
+              ]
+            },
+            {
+              points: [
+                { x: 1, y: 4 },
+                { x: 48, y: 4 },
+                { x: 48, y: 97.5 },
+                { x: 1, y: 97.5 },
+              ]
+            }
+          ]
+        }
+      ];
+
+      // 漫画ページをロードする
+      // コミックのページのデータを受け取る
+      let loadAndShowComicPage = function (comicPage) {
+        console.log("漫画ページをロードしています...")
+
+        let pageImage = new Image();
+        pageImage.src = comicPage.imagePath;
+
+        pageImage.addEventListener("load", function () {
+          console.log("漫画ページをロードしました")
+          comicPage.image = pageImage;
+          viewPage(comicPage);
+        }, false);
+      }
+
+      // 漫画ページを表示する
+      let viewPage = function (comicPage) {
+        console.log("漫画ページを描写しています...");
+
+
+        // 元画像の比率を計算して，比率を保持したまま画面中央に表示できるようにする．
+        if (windowWidth / windowHeight > comicPage.image.width / comicPage.image.height) { // 画面が漫画よりさらに横長の場合
+          console.log("画面が漫画より横長の場合")
+          viewerPadding.top = 0;
+          viewerPadding.left = (windowWidth - comicPage.image.width / comicPage.image.height * windowHeight) / 2;
+          viewerPadding.width = comicPage.image.width / comicPage.image.height * windowHeight;
+          viewerPadding.height = windowHeight;
+        } else{
+          console.log("画面が漫画より縦長の場合")
+          viewerPadding.top = (windowHeight - comicPage.image.height / comicPage.image.width * windowWidth) / 2;
+          viewerPadding.left = 0;
+          viewerPadding.width = windowWidth;
+          viewerPadding.height = comicPage.image.height / comicPage.image.width * windowWidth;
+        }
+
+        // 漫画画像を描写
+        viewerCanvasContext.drawImage(comicPage.image,
+          0, 0, comicPage.image.width, comicPage.image.height,
+          viewerPadding.left, viewerPadding.top, viewerPadding.width, viewerPadding.height);
+
+        // コマを薄く表示する
+        viewerCanvasContext.fillStyle = '#0000cd40';
+        for (let i=0;i<comicPage.frames.length;i++) {
+          const frame = comicPage.frames[i];
+
+          viewerCanvasContext.beginPath();
+          viewerCanvasContext.moveTo(
+            frame.points[0].x / 100 * viewerPadding.width + viewerPadding.left,
+            frame.points[0].y / 100 * viewerPadding.height + viewerPadding.top);
+          for (let j=1;j<frame.points.length;j++)
+            viewerCanvasContext.lineTo(
+              frame.points[j].x / 100 * viewerPadding.width + viewerPadding.left,
+              frame.points[j].y / 100 * viewerPadding.height + viewerPadding.top);
+
+          viewerCanvasContext.fill();
+        }
+      }
+
+      let looking = function (e) {
+        let screenX = e.pageX;
+        let screenY = e.pageY;
+
+        // スクリーン座標から0~100の値に変換する
+        let x = 100 * (screenX - viewerPadding.left) / viewerPadding.width;
+        let y = 100 * (screenY - viewerPadding.top) / viewerPadding.height;
+
+        // コマに重なっているか判定する
+
+        let frameIndex = -1
+
+        for (let i=0;i<comicPages[currentComicPageIndex].frames.length;i++) {
+          const frame = comicPages[currentComicPageIndex].frames[i];
+          let minX, maxX, minY, maxY;
+          for (let j=0;j<frame.points.length;j++) {
+            if (!minX || minX > frame.points[j].x) minX = frame.points[j].x;
+            if (!maxX || maxX < frame.points[j].x) maxX = frame.points[j].x;
+            if (!minY || minY > frame.points[j].y) minY = frame.points[j].y;
+            if (!maxY || maxY < frame.points[j].y) maxY = frame.points[j].y;
+          }
+          if (minX < x && x < maxX && minY < y && y < maxY)
+            frameIndex = i;
+        }
+
+        if (frameIndex != -1) console.log(frameIndex)
+
+      };
+
+      window.onload = function () {
+        // ロード時に実行される
+        viewerCanvas = document.getElementById("viewerCanvas");
+        viewerCanvasContext = viewerCanvas.getContext('2d');
+
+        // 画面の大きさを取得
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+
+        // カンバスの大きさを設定
+        viewerCanvas.width = windowWidth;
+        viewerCanvas.height = windowHeight;
+
+        // マウスオーバーを取得
+        window.addEventListener("mousemove", looking);
+
+        // 漫画の0ページ目をロードして描写する
+        currentComicPageIndex = 0
+        loadAndShowComicPage(comicPages[currentComicPageIndex])
+
+      };
+    </script>
+    <style type="text/css">
+      .viewer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+
+    </style>
   </head>
   <body>
-    <h1>Hello World!!</h1>
+  <div class="viewer">
+    <canvas id="viewerCanvas"></canvas>
+  </div>
   </body>
 </html>
