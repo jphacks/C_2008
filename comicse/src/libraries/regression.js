@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs-core'
+import * as tflayer from '@tensorflow/tfjs-layers'
 import config from '../../app_config'
 
 const eyeWidth = config.eyeWidth
@@ -13,18 +14,27 @@ export default {
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
     // outputs[0][1]...0番目のトレーニングサンプルの出力の1番目の数値
 
+    var m = inputs[0].length;
+
+
     var X = tf.tensor2d(inputs);
     var Y = tf.tensor2d(outputs);
 
-    const model = tf.sequential();
-    model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+    const model = tflayer.sequential();
+    model.add(tflayer.layers.dense({ units: 2, inputShape: [m] }));
 
     model.compile({
       loss: 'meanSquaredError',
       optimizer: 'sgd'
     });
 
-    await model.fit(X, Y, { epochs: 10 });
+    const history = await model.fit(X, Y, { epochs: 100 });
+
+    model.weights.forEach(w => {
+      console.log(w.name, w);
+    });
+
+    console.log(history.history.loss);
 
     return model;
 
