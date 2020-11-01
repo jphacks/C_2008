@@ -41,6 +41,7 @@ export default {
   }),
   predict: (async (input) => { // 予測関数（inputは10*6*2次元のベクトル）
     // input[10]...入力の10番目の数値
+    let m = input.length;
     const result = model.predict(tf.tensor2d(input, [1,m])).arraySync();
     result[0] = Math.max(0, Math.min(result[0], 100));
     result[1] = Math.max(0, Math.min(result[1], 100));
