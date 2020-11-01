@@ -11,6 +11,10 @@ publicというフォルダはindex.htmlがあります．
 srcというフォルダがソースコードのフォルダです．
 さらにその中のviewsの中のCalibrate.vueとHome.vueが僕らがいじるファイルです．
 
+comicseのフォルダ中で次のようにしてライブラリをインストールしてください
+```
+$npm install
+```
 comicseのフォルダ中で次のようにして実行してください．
 ```
 $npm run serve
