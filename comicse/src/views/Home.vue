@@ -1,8 +1,6 @@
 <template>
   <div class="home">
-    <router-link to="/calibrate">
-      キャリブレートする
-    </router-link>
+    <el-button>キャリブレートする</el-button>
   </div>
 </template>
 
