@@ -7,40 +7,42 @@ const eyeHeight = config.eyeHeight
 
 const ridgeParameter = Math.pow(10, -5);
 
+let model = tflayer.sequential();
+let notTrained = true;
+
 export default {
-  weightX: new Array(eyeWidth * eyeHeight),
-  weightY: new Array(eyeWidth * eyeHeight),
   train: (async (inputs, outputs) => { // 訓練関数（inputsは(N,10*6*2)の行列，outputsは(N,2)の行列）
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
     // outputs[0][1]...0番目のトレーニングサンプルの出力の1番目の数値
-
     var m = inputs[0].length;
-
-
     var X = tf.tensor2d(inputs);
     var Y = tf.tensor2d(outputs);
 
-    const model = tflayer.sequential();
-    model.add(tflayer.layers.dense({ units: 2, inputShape: [m] }));
+    if(notTrained){
+      model = tflayer.sequential();
+      model.add(tflayer.layers.dense({ units: 2, inputShape: [m], kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
 
-    model.compile({
-      loss: 'meanSquaredError',
-      optimizer: 'sgd'
-    });
+      model.compile({
+        loss: 'meanSquaredError',
+        optimizer: 'sgd'
+      });
+      notTrained = false;
+    }else{
+      model.predict(tf.tensor2d(inputs[0], [1,m])).print();
+    }
 
-    const history = await model.fit(X, Y, { epochs: 100 });
-
-    model.weights.forEach(w => {
-      console.log(w.name, w);
-    });
+    const history = await model.fit(X, Y, { epochs: 500 });
 
     console.log(history.history.loss);
+    const result = model.predict(tf.tensor2d(inputs[0], [1,m])).arraySync();
+    console.log([result[0][0], result[0][1]]);
 
     return model;
 
   }),
-  predict: (async (input, weights) => { // 予測関数（inputは10*6*2次元のベクトル）
+  predict: (async (input, learnModel) => { // 予測関数（inputは10*6*2次元のベクトル）
     // input[10]...入力の10番目の数値
-    return [0, 0]
+    const result = learnModel.predict(tf.tensor2d(input, [1,m]));
+    return [result[0], result[1]];
   })
 }
