@@ -54,6 +54,7 @@
       return {
         ready: false,
         instruction: true,
+        prev: null
       }
     },
     computed: {
@@ -72,6 +73,7 @@
       calibrate: async function (e) {
         if (this.ready === false) return
         let context = this.$refs.calibrate_screen.getContext("2d")
+
         context.beginPath()
         context.arc(e.pageX, e.pageY, 8, 0, 2 * Math.PI, false)
         context.fillStyle = "rgba(255,0,0)"
@@ -81,6 +83,7 @@
         console.log("キャリブレーション")
         const input = await this.$refs.facemesh.getEyes()
         const output = [e.pageX / window.innerWidth * 100, e.pageY / window.innerHeight * 100]
+        if (!input) return
         this.$store.commit("pushCalibrateData", { input: input, output: output })
 
         // trainを呼び出すとweightが戻ってくる
@@ -88,31 +91,28 @@
         console.log("入力: ", input)
         console.log("出力: ", output)
 
-        ;(async () => {
-          for (let i=8;i>0;i-=1) {
-            context.beginPath()
-            context.arc(e.pageX, e.pageY, i, 0, 2 * Math.PI, false)
-            context.fillStyle = "rgba(255,0,0)"
-            context.fill()
-            this.sleep(10)
-            context.clearRect(e.pageX-8, e.pageY-8, 16, 16)
-          }
-        })()
-
+        context.clearRect(e.pageX-8, e.pageY-8, 16, 16)
       },
       predict: async function () {
         while (true) {
           const input = await this.$refs.facemesh.getEyes()
+          if (!input) continue
           const predicted_output = await Regression.predict(input)
+
           console.log(predicted_output)
           if (predicted_output !== null) {
             let context = this.$refs.calibrate_screen.getContext("2d")
+            if (this.prev !== null)
+              context.clearRect(this.prev[0] * window.innerWidth / 100 - 8, this.prev[1] * window.innerWidth / 100 - 8, 16, 16)
+
             context.beginPath()
             context.arc(predicted_output[0] * window.innerWidth / 100, predicted_output[1] * window.innerWidth / 100, 6, 0, 2 * Math.PI, false)
             context.fillStyle = "rgba(0,0,255)"
             context.fill()
+            this.prev = predicted_output
           }
-          this.sleep(1000)
+
+          this.sleep(100)
         }
       },
       sleep: function (time) {
