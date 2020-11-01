@@ -1,11 +1,19 @@
 <template>
   <div class="about">
-    キャリブレート画面
+    <FaceMesh :active="true" @getEyes="getEyes"/>
   </div>
 </template>
 
 <script>
+  import FaceMesh from "../components/FaceMesh";
   export default {
-    name: 'Calibrate',
+    components: {
+      FaceMesh
+    },
+    methods: {
+      getEyes: function (eyes) {
+        console.log(eyes)
+      }
+    }
   }
 </script>

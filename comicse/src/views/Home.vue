@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    Hello
+    <router-link to="/calibrate">
+      キャリブレートする
+    </router-link>
   </div>
 </template>
 

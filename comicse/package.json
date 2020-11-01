@@ -7,6 +7,10 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@tensorflow-models/facemesh": "0.0.5",
+    "@tensorflow/tfjs-converter": "^2.1.0",
+    "@tensorflow/tfjs-core": "^2.1.0",
+    "@tensorflow/tfjs-backend-webgl": "^2.1.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",

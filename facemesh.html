@@ -10,14 +10,34 @@
       window.onload = () => { // ロード時に発火する
         tf.setBackend('wasm').then(() => { // backendとしてwasmを準備して，準備が終わったら発火する
           facemesh.load().then((model) => { // facemeshのモデルを読み込み，読み込みが終わったら発火する
-            // let video = document.getElementById("video") // ビデオのDOM(HTMLタグ)をIDを使って取得する．
-            // model.estimateFaces(video) // videoのデータを渡してあげると推定してくれるらしい（もうちょっと試したい）
+            let video = document.getElementById("video") // ビデオのDOM(HTMLタグ)をIDを使って取得する．
+
+            // カメラの情報にアクセスして，1080 * 720の画素でカメラの情報を取得する
+            navigator.mediaDevices.getUserMedia({
+              audio: false,
+              video: {
+                width: { ideal: 1080 },
+                height: { ideal: 720 }
+              }
+            }).then((stream) => {
+              video.srcObject = stream
+            })
+
+            video.onloadeddata = () => { // ビデオの準備ができたら発火する
+
+              model.estimateFaces(video).then((faces) => { // 顔の情報を取得する
+                const face = faces[0] // 複数人取れるらしいがひとりしか使わないので0番目のみ取得
+
+                console.log(face)
+              })
+
+            };
           })
         })
       }
     </script>
   </head>
   <body>
-    <video id="video" width="320" height="240"></video>
+    <video id="video" width="320" height="240" autoplay="true"></video>
   </body>
 </html>
