@@ -10,14 +10,16 @@
   import * as facemesh from '@tensorflow-models/facemesh'
   require('@tensorflow/tfjs-backend-webgl')
 
+  import config from '../../app_config'
+
   export default {
     name: 'FaceMesh',
     data () {
       return {
-        width: 320,
-        height: 240,
-        eyeWidth: this.$config.eyeWidth,
-        eyeHeight: this.$config.eyeHeight,
+        width: config.videoWidth,
+        height: config.videoHeight,
+        eyeWidth: config.eyeWidth,
+        eyeHeight: config.eyeHeight,
         model: null,
         video: null,
         eyeL: null,

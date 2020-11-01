@@ -1,7 +1,8 @@
 import * as tf from '@tensorflow/tfjs-core'
+import config from '../../app_config'
 
-const eyeWidth = 10
-const eyeHeight = 6
+const eyeWidth = config.eyeWidth
+const eyeHeight = config.eyeHeight
 
 const ridgeParameter = Math.pow(10, -5);
 
