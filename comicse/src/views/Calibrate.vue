@@ -42,12 +42,14 @@
         console.log("キャリブレーション")
         const input = await this.$refs.facemesh.getEyes()
         const output = [e.pageX / window.innerWidth * 100, e.pageY / window.innerHeight * 100]
-        const weight = Regression.train(input, output)
+        this.$store.commit("pushCalibrateData", { input: input, output: output })
+
+        // trainを呼び出すとweightが戻ってくる
+        const weight = await Regression.train(this.calibrateInputs, this.calibrateOutputs)
         console.log("入力: ", input)
         console.log("出力: ", output)
         console.log("重み: ", weight)
 
-        this.$store.commit("pushCalibrateData", { input: input, output: output })
         this.$store.commit("setWeight", { weight: weight })
 
       },
