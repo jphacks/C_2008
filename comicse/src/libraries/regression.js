@@ -35,8 +35,7 @@ export default {
     const history = await model.fit(X, Y, { epochs: 100 });
 
     console.log(history.history.loss);
-    const result = predict(inputs[0]);
-    console.log(result);
+    console.log(predict(inputs[0]));
 
   }),
   predict: (async (input) => { // 予測関数（inputは10*6*2次元のベクトル）
@@ -48,7 +47,8 @@ export default {
 
 function predict(input){
   let m = input.length;
-  const result = model.predict(tf.tensor2d(input, [1,m])).arraySync();
+  const output = model.predict(tf.tensor2d(input, [1,m])).arraySync();
+  const result = output[0];
   result[0] = Math.max(0, Math.min(result[0], 100));
   result[1] = Math.max(0, Math.min(result[1], 100));
   return [result[0], result[1]];
