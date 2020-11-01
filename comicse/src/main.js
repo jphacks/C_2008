@@ -3,11 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-Vue.prototype.$config = {
-  eyeWidth: 10,
-  eyeHeight: 6
-}
-
 Vue.config.productionTip = false
 
 new Vue({
