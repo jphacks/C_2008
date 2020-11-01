@@ -11,8 +11,8 @@ export default {
   train: (async (inputs, outputs) => { // 訓練関数（inputsは(N,10*6*2)の行列，outputsは(N,2)の行列）
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
     // outputs[0][1]...0番目のトレーニングサンプルの出力の1番目の数値
-    var n = 1; //inputs.length;
-    var m = inputs.length; //inputs[0].length;
+    var n = inputs.length;
+    var m = inputs[0].length;
 
     var X = tf.tensor2d(inputs, [n, m]);
     var y = tf.tensor2d(outputs, [n, 1]);
