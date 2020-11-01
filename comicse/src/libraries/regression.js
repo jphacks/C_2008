@@ -40,6 +40,7 @@ export default {
 
   }),
   predict: (async (input) => { // 予測関数（inputは10*6*2次元のベクトル）
+    if (notTrained === true) return null
     // input[10]...入力の10番目の数値
     return predict(input);
   })
