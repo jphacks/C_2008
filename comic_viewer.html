@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Comic Viewer</title>
+
     <!--<script type="text/javascript" src="./webgazer.js"></script>//-->
     <script type="text/javascript">
       // グローバル変数
@@ -14,8 +15,9 @@
           image: null, // 画像を扱う際に「画像オブジェクト」としてデータを保持する必要があるので変数を作っておく
           frames: [
             {
-              soundPath: "ガクガク…の音のファイルパス", // 音声のパス
-              sound: null, // 音声を扱う際に「画像オブジェクト」としてデータを保持する必要があるので変数を作っておく
+              soundPath: "audio/katakata.wav", // 音声のデータ
+              hellSoundPath: "audio/hell/gakugaku.m4a", // 地獄モードの音声データパス
+              sound: null, // 音声を扱う際に「音声オブジェクト」としてデータを保持する必要があるので変数を作っておく
               points: [
                 { x: 83.1, y: 4 },
                 { x: 98.9, y: 4 },
@@ -25,6 +27,7 @@
             },
             {
               soundPath: null,
+              hellSoundPath: null,
               sound: null,
               points: [
                 { x: 52, y: 4 },
@@ -34,7 +37,8 @@
               ]
             },
             {
-              soundPath: "プチンの音のファイルパス",
+              soundPath: "audio/puchin.wav",
+              hellSoundPath: "audio/hell/putin.m4a",
               sound: null,
               points: [
                 { x: 52, y: 29.5 },
@@ -44,7 +48,8 @@
               ]
             },
             {
-              soundPath: "ゾワッの音のファイルパス",
+              soundPath: "audio/mowaaan.mp3",
+              hellSoundPath: "audio/hell/zowa.m4a",
               sound: null,
               points: [
                 { x: 77.5, y: 48.5 },
@@ -55,6 +60,7 @@
             },
             {
               soundPath: null,
+              hellSoundPath: "audio/hell/ha.m4a",
               sound: null,
               points: [
                 { x: 52, y: 49 },
@@ -65,6 +71,7 @@
             },
             {
               soundPath: null,
+              hellSoundPath: "audio/hell/n.m4a",
               sound: null,
               points: [
                 { x: 52, y: 67 },
@@ -74,7 +81,8 @@
               ]
             },
             {
-              soundPath: "ズゥゥ…ンの音のファイルパス",
+              soundPath: "audio/zuun.mp3",
+              hellSoundPath: "audio/hell/zuuuun_shunshun.m4a",
               sound: null,
               points: [
                 { x: 1, y: 4 },
@@ -145,6 +153,8 @@
         }
       }
 
+      // ひとつ前に見ていたコマ
+      let prevFrameIndex = -1;
       let looking = function (e) {
         let screenX = e.pageX;
         let screenY = e.pageY;
@@ -174,6 +184,14 @@
           // コマに重なっている場合はframeIndexがコマのIDになってます
         }
 
+        // 音を鳴らします
+        if(prevFrameIndex != frameIndex && frameIndex != -1){
+          var sound = comicPages[0].frames[frameIndex].sound;
+          if(sound != null)
+            sound.play();
+        }
+
+        prevFrameIndex = frameIndex;
       };
 
       window.onload = function () {
@@ -197,6 +215,13 @@
         currentComicPageIndex = 0;
         loadAndShowComicPage(comicPages[currentComicPageIndex]);
 
+        for(let i=0;i<comicPages[currentComicPageIndex].frames.length;i++){
+          var frame = comicPages[currentComicPageIndex].frames[i];
+          if(frame.soundPath == null)
+            continue;
+          frame.sound = new Audio(frame.soundPath);
+        }
+
         /*
         webgazer.params.showVideoPreview = true;
         webgazer.setRegression('ridge').setTracker('TFFacemesh').setGazeListener(function(data, elapsedTime) {
@@ -216,6 +241,16 @@
         */
 
       };
+
+      function ChangeToHellMode(){
+        for(let i=0; i<comicPages[0].frames.length; i++){
+           var frame = comicPages[0].frames[i];
+          if (frame.hellSoundPath == null)
+            continue;
+          frame.sound = new Audio(frame.hellSoundPath);
+        }
+      }
+
     </script>
     <style type="text/css">
       .viewer {
@@ -231,7 +266,9 @@
   <body>
   <div class="viewer">
     <canvas id="viewerCanvas"></canvas>
+    <input type="button" value="地獄モード" onclick="ChangeToHellMode();"/><br />
   </div>
+
   <!--<canvas id="plotting_canvas" class="viewer"></canvas>//-->
   </body>
 </html>
