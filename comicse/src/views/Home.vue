@@ -60,7 +60,7 @@ export default {
   }
   .effects-0 {
     top: 150px;
-    right: -50px;
+    right: 0px;
     width: 480px;
     opacity: 0.8;
   }

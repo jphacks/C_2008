@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video ref="facemeshvideo" :width="width" :height="height" autoplay="true"></video>
+    <video ref="facemeshvideo" :width="width" :height="height" autoplay="true" style="border-radius: 16px;"></video>
     <canvas ref="facemesheyeL" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
     <canvas ref="facemesheyeR" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
   </div>
@@ -40,7 +40,7 @@
         // 0番目の顔のポジションから左目の位置と右目の位置を算出
         const positions = faces[0].scaledMesh
         const leftX  = Math.round(Math.min(positions[247][0], positions[130][0], positions[25][0]))
-        const leftY  = Math.round(Math.min(positions[247][1], positions[27][1], positions[190][1]))
+        const leftY  = Math.round(Math.min(positions[247][1], positions[ 27][1], positions[190][1]))
         const leftW  = Math.round(Math.max(positions[190][0], positions[243][0], positions[233][0]) - leftX)
         const leftH  = Math.round(Math.max(positions[ 25][1], positions[ 23][1], positions[112][1]) - leftY)
         const rightX = Math.round(Math.min(positions[414][0], positions[463][0], positions[453][0]))

@@ -1,23 +1,42 @@
 <template>
-  <div class="calibrate">
-    <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
-    <canvas class="calibrate-screen" ref="calibrate_screen" @click="calibrate"></canvas>
-    <div class="description">
-      ■キャリブレーション<br/>
-      データ数: {{ calibrateInputs.length }}<br/>
-      キャリブレーションしたデータは<br/>
-      自動で保存されます．<br/>
-      <button @click="resetCalibrateData">data reset</button>
+  <div class="container">
+    <div class="calibrate">
+      <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
+      <canvas class="calibrate-screen" ref="calibrate_screen" @click="calibrate"></canvas>
+      <el-card class="description">
+        <div style="font-size: 1.2em;">学習情報</div>
+        <div>
+          サンプル数: {{ calibrateInputs.length }}
+        </div>
+        <div style="font-size: 0.8em;color: gray;padding-bottom: 12px;">
+          キャリブレーションしたデータは<br/>
+          ブラウザに自動で保存されます．<br/>
+        </div>
+        <el-button type="danger" size="mini" round plain @click="resetCalibrateData">データの削除</el-button>
+      </el-card>
     </div>
+    <transition>
+      <div class="loading" v-if="!ready">
+        <div style="display: flex;flex-direction: row;justify-content: center">
+          <el-card style="width: 640px;padding: 32px 0;">
+            <img src="@/assets/icons/loading.gif"/><br/>
+            学習のための準備をしています<br/>
+            しばらくお待ちください
+          </el-card>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
   import FaceMesh from "../components/FaceMesh"
   import Regression from "../libraries/regression"
+  import { VueLoading } from 'vue-loading-template'
   export default {
     components: {
-      FaceMesh
+      FaceMesh,
+      VueLoading
     },
     data () {
       return {
@@ -60,6 +79,10 @@
   }
 </script>
 <style>
+  .container {
+    width: 100%;
+    height: 100%;
+  }
   .calibrate {
     display: flex;
     flex-direction: column;
@@ -75,8 +98,28 @@
   }
   .description {
     position: absolute;
+    top: 16px;
+    left: 16px;
+    text-align: left;
+  }
+  .loading {
+    position: fixed;
     top: 0;
     left: 0;
-    text-align: left;
+    background-color: #ffffff;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .v-enter-active, .v-leave-active {
+    transition: opacity .5s;
+  }
+  .v-enter, .v-leave-to {
+    opacity: 0;
   }
 </style>
