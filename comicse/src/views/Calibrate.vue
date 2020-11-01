@@ -42,7 +42,7 @@
         console.log("キャリブレーション")
         const input = await this.$refs.facemesh.getEyes()
         const output = [e.pageX / window.innerWidth * 100, e.pageY / window.innerHeight * 100]
-        const weight = Regression.hello()
+        const weight = Regression.train(input, output)
         console.log("入力: ", input)
         console.log("出力: ", output)
         console.log("重み: ", weight)
