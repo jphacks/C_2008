@@ -92,7 +92,7 @@
         // フィルターに明度データを通す
         let filtered_gray = new Array(IMAGE_DATA_LENGTH)
         for (let i = 0;i < IMAGE_DATA_LENGTH;i ++) {
-          filtered_gray[i] = histogram[gray[i]]
+          filtered_gray[i] = histogram[gray[i]] / BRIGHTNESS
         }
 
         return filtered_gray
