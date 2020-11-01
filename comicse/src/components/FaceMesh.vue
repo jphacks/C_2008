@@ -1,30 +1,39 @@
 <template>
   <div>
-    <video ref="video" :width="width" :height="height" autoplay="true"></video>
-    <canvas ref="eyeL" :width="eyeWidth" :height="eyeHeight"></canvas>
-    <canvas ref="eyeR" :width="eyeWidth" :height="eyeHeight"></canvas>
+    <video ref="facemeshvideo" :width="width" :height="height" autoplay="true"></video>
+    <canvas ref="facemesheyeL" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
+    <canvas ref="facemesheyeR" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
   </div>
 </template>
 <script>
+  import * as tf from '@tensorflow/tfjs-core'
+  import * as facemesh from '@tensorflow-models/facemesh'
+  require('@tensorflow/tfjs-backend-webgl')
+
+  import config from '../../app_config'
+
   export default {
     name: 'FaceMesh',
-    props: ['active'],
     data () {
       return {
-        width: 320,
-        height: 240,
-        eyeWidth: this.$config.eyeWidth,
-        eyeHeight: this.$config.eyeHeight,
+        width: config.videoWidth,
+        height: config.videoHeight,
+        eyeWidth: config.eyeWidth,
+        eyeHeight: config.eyeHeight,
+        model: null,
         video: null,
         eyeL: null,
         eyeR: null,
-        stream: null
+        stream: null,
+        ready: false
       }
     },
     methods: {
       getEyes: async function() {
+        if (this.ready !== true) return
+
         if (this.video === null) return
-        const faces = await this.$facemesh.estimateFaces(this.video)
+        const faces = await this.model.estimateFaces(this.video)
         if (faces.length === 0) return
 
         const positions = faces[0].scaledMesh
@@ -43,11 +52,12 @@
         this.eyeL.getContext('2d').drawImage(this.video, leftX, leftY, leftW, leftH, 0, 0, this.eyeWidth, this.eyeHeight)
         this.eyeR.getContext('2d').drawImage(this.video, rightX, rightY, rightW, rightH, 0, 0, this.eyeWidth, this.eyeHeight)
 
-        this.$emit("getEyes",
-          this.imageData2array(this.eyeL.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight)).concat(
-            this.imageData2array(this.eyeR.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight))
-          )
+        const eyes = this.imageData2array(this.eyeL.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight)).concat(
+          this.imageData2array(this.eyeR.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight))
         )
+
+        this.$emit("getEyes", eyes)
+        return eyes
       },
       imageData2array: function (imageData) {
         let retval = new Array(this.eyeWidth * this.eyeHeight)
@@ -58,9 +68,12 @@
       }
     },
     mounted: async function () {
-      this.video = this.$refs["video"]
-      this.eyeL = this.$refs["eyeL"]
-      this.eyeR = this.$refs["eyeR"]
+      this.video = this.$refs["facemeshvideo"]
+      this.eyeL = this.$refs["facemesheyeL"]
+      this.eyeR = this.$refs["facemesheyeR"]
+
+      await tf.setBackend("webgl")
+      this.model = await facemesh.load()
 
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -71,19 +84,22 @@
       })
       this.video.srcObject = this.stream
 
-      await new Promise((resolve) => { this.video.onloadeddata = () => { resolve() } })
-
-      while (this.active) {
-        await this.getEyes()
+      this.video.onloadeddata = async () => {
+        await this.model.estimateFaces(this.video)
+        await this.model.estimateFaces(this.video)
+        this.ready = true
+        this.$emit("onready")
       }
     },
 
     beforeDestroy () {
       this.video.srcObject = null
       this.video = null
+      this.model = null
       this.stream = null
       this.eyeL = null
       this.eyeR = null
+      this.ready = false
     }
   }
 </script>
