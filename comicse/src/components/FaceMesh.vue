@@ -3,7 +3,7 @@
     <video ref="facemeshvideo" :width="width" :height="height" autoplay="true" style="border-radius: 16px;"></video>
     <canvas ref="facemesheyeL" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
     <canvas ref="facemesheyeR" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas><br/>
-    <canvas ref="facemesh_debug_eye_resultL" :width="eyeWidth * 16" :height="2 * eyeHeight * 16"></canvas>
+    <canvas ref="facemesh_debug_eye_resultL" :width="eyeWidth * 16" :height="2 * eyeHeight * 16" style="display: none"></canvas>
   </div>
 </template>
 <script>
@@ -63,7 +63,7 @@
         )
 
         // デバッグように画面に表示する
-        this.showEyes(eyes)
+        // this.showEyes(eyes)
 
         //  eyesを渡す
         this.$emit("getEyes", eyes)
