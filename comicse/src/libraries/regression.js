@@ -12,10 +12,12 @@ let notTrained = true;
 
 export default {
   reset: (async () => {
+    notTrained = true;
+
     model = null;
     model = tflayer.sequential();
-    model.add(tflayer.layers.dense({ units: 2, inputShape: [m], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
-    
+    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
+
     model.compile({
       loss: 'meanSquaredError',
       optimizer: 'sgd'
@@ -25,10 +27,6 @@ export default {
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
     // outputs[0][1]...0番目のトレーニングサンプルの出力の1番目の数値
     var m = inputs[0].length;
-
-    if(inputs.length % 10){
-      return;
-    }
 
     var X = tf.tensor2d(inputs);
     var Y = tf.tensor2d(outputs);
