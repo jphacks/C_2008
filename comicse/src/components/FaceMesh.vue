@@ -80,7 +80,9 @@
 
         // グレースケール化（明度データ）
         for (let i = 0;i < IMAGE_DATA_LENGTH;i ++) {
-          gray[i] = Math.floor((imageData.data[i * 4] * 0.299 + imageData.data[i * 4 + 1] * 0.587 + imageData.data[i * 4 + 2] * 0.114))
+          // gray[i] = Math.floor((imageData.data[i * 4] * 0.299 + imageData.data[i * 4 + 1] * 0.587 + imageData.data[i * 4 + 2] * 0.114))
+          // 赤青緑のチャネルの重み付き平均でグレースケール化
+          gray[i] = imageData.data[i * 4] // 赤だけ利用
         }
 
         // ヒストグラムを作成（ただし全ての点を使わず，5つに1つの割合で使う）
