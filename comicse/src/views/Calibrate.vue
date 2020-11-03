@@ -1,22 +1,28 @@
 <template>
   <div class="container">
     <div class="calibrate">
-      <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
-      <canvas class="calibrate-screen" ref="calibrate_screen" @click="calibrate"></canvas>
-      <el-card class="description">
-        <div style="font-size: 1.2em;">
-          学習情報
-          <el-button type="danger" size="mini" round plain @click="reset">データの削除</el-button>
+      <transition>
+        <div v-show="calibrating_step === 2">
+          <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
         </div>
-        <div>
-          サンプル数: {{ calibrateInputs.length }}
+      </transition>
+      <div v-show="calibrating_step >= 2" class="calibrate-screen" @click="calibrate">
+        <div class="calibrate-marker"
+             v-if="calibrateMarker.pos !== null"
+             :style="{left: (calibrateMarker.pos[0] / 100 * screenSize[0] - 16) + 'px', top: (calibrateMarker.pos[1] / 100 * screenSize[1] - 16) + 'px' }"></div>
+        <div class="predict-marker"
+             v-if="predictMarker.pos !== null"
+             :style="{left: (predictMarker.pos[0] / 100 * screenSize[0] - 16) + 'px', top: (predictMarker.pos[1] / 100 * screenSize[1] - 16) + 'px' }"></div>
+      </div>
+      <transition>
+        <div v-show="calibrating_step === 0 || calibrating_step === 5">
+          <el-card class="description">
+            データ数: {{ calibrateInputs.length }}<br/>
+            <el-button type="danger" @click="reset()" round size="mini" plain>データをリセットする</el-button>
+            <el-button type="primary" @click="calibrating_step = 1">キャリブレーションする</el-button>
+          </el-card>
         </div>
-        <div style="font-size: 0.8em;color: gray;padding-bottom: 12px;">
-          キャリブレーションしたデータは<br/>
-          ブラウザに自動で保存されます．<br/>
-        </div>
-        <el-button type="primary" size="large" round @click="train">このサンプルデータで学習する</el-button>
-      </el-card>
+      </transition>
     </div>
     <transition>
       <div class="loading" v-if="!ready">
@@ -33,12 +39,16 @@
       title="キャリブレーション"
       :visible.sync="instruction"
       width="40%">
-      <span style="color: #0D83FC">明るい部屋</span>で，画面中央のカメラに<span style="color: #0D83FC">顔全体が映るように</span>してください<br/>
-      <span style="color: #0D83FC">カーソルに視線を合わせたまま，</span>ページのあちこちをクリックしてください<br/>
-      精度を上げるため少なくとも<span style="color: #0D83FC">30回ほど</span>クリックをしてください<br/>
-      なお，<span style="color: #0D83FC">顔の映像やデータは一切サーバーに送信いたしません</span><br/>
+      <ol>
+        <li><span style="color: #0D83FC">明るい部屋</span>で，画面中央のカメラに<span style="color: #0D83FC">顔全体が映るように</span>してください</li>
+        <li>準備ができたら画面をクリックすると，<span style="color: #0D83FC">青いマーカーが画面中央に現れます</span></li>
+        <li>青いマーカーが画面を動き回るので，<span style="color: #0D83FC">マーカーを見続けてください</span></li>
+      </ol>
+      <p>
+        なお，<span style="color: #0D83FC">取得した顔の映像や学習データは，一切サーバー等に送信いたしません</span>
+      </p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="instruction = false">わかった</el-button>
+        <el-button type="primary" @click="calibrating_step = 2">OK</el-button>
       </span>
     </el-dialog>
   </div>
@@ -48,6 +58,7 @@
   import FaceMesh from "../components/FaceMesh"
   import Regression from "../libraries/regression"
   import { VueLoading } from 'vue-loading-template'
+
   export default {
     components: {
       FaceMesh,
@@ -56,80 +67,98 @@
     data () {
       return {
         ready: false,
-        instruction: false,
-        prev: null,
-        training: false,
-        calibrating: false,
-        colors: ["#409EFF", "#67C23A", "#E6A23C", "#F56C6C"]
+        calibrating_step: 0,
+        screenSize: null,
+        calibrateMarker: {
+          pos: null,
+        },
+        predictMarker: {
+          pos: null
+        },
+        calibrateEvents: []
       }
     },
     computed: {
+      instruction: {
+        get: function () { return this.calibrating_step === 1 },
+        set: function () { this.calibrating_step = 0 }
+      },
       calibrateInputs: function () { return this.$store.state.calibrateInputs },
       calibrateOutputs: function () { return this.$store.state.calibrateOutputs }
     },
     mounted () {
-      this.$refs.calibrate_screen.width = window.innerWidth
-      this.$refs.calibrate_screen.height = window.innerHeight
+      this.screenSize = [ window.innerWidth, window.innerHeight ]
+      this.createCalibrateEvents()
     },
     methods: {
       onReadyCalibrate: function () {
         Regression.reset()
         this.ready = true
-        this.instruction = true
-        this.predict()
+        this.calibrating_step = 0
       },
-      calibrate: async function (e) {
-        if (this.ready === false) return
-        if (this.training === true) return
-        if (this.calibrating === true) return
-        this.calibrating = true
-
-        let context = this.$refs.calibrate_screen.getContext("2d")
-
-        let x = e.pageX, y = e.pageY
-
-        context.beginPath()
-        context.arc(x, y, 8, 0, 2 * Math.PI, false)
-        context.fillStyle = this.colors[Math.floor(Math.random() * this.colors.length)]
-        context.fill()
-
-        console.log("キャリブレーション")
-        const input = await this.$refs.facemesh.getEyes()
-        const output = [x / window.innerWidth * 100, y / window.innerHeight * 100]
-        if (!input) return
-        this.$store.commit("pushCalibrateData", { input: input, output: output })
-
-        context.clearRect(x - 8, y- 8, 16, 16)
-        this.calibrating = false
-      },
-      train: async function () {
-        if (this.calibrateInputs && this.calibrateInputs.length > 0) {
-          this.training = true
-          console.log("学習なう")
-          await Regression.train(this.calibrateInputs, this.calibrateOutputs)
-          this.training = false
-          console.log("学習終わり！")
+      createCalibrateEvents: function () {
+        for (let y = 5;y <= 85;y+= 20) {
+          for (let x = 5;x <= 95;x += 10)
+            this.calibrateEvents.push([x, y])
+          for (let x = 95;x >= 5;x -= 10)
+            this.calibrateEvents.push([x, y + 10])
         }
       },
+      calibrate: async function () {
+        if (this.calibrating_step !== 2) return
+        this.calibrating_step = 3
+
+        this.calibrateMarker.pos = [50, 50]
+        await this.sleep(1000)
+        for (let event of this.calibrateEvents) {
+            await this.moveCalibrateMarker(event[0], event[1])
+            await this.fetchCalibrateData(5)
+        }
+        this.calibrateMarker.pos = null
+
+        this.calibrating_step = 4
+        await this.train()
+        this.predict()
+      },
+
+      moveCalibrateMarker: async function (toX, toY) {
+        const fromX = this.calibrateMarker.pos[0]
+        const fromY = this.calibrateMarker.pos[1]
+        const step = Math.ceil(Math.sqrt((toX - fromX) * (toX - fromX) + (toY - fromY) * (toY - fromY)))
+        for (let t=0;t<=step;t++) {
+          this.calibrateMarker.pos = [(toX - fromX) * t / step + fromX, (toY - fromY) * t / step + fromY]
+          await this.sleep(10)
+        }
+      },
+      fetchCalibrateData: async function (time) {
+        await this.sleep(100)
+        console.log([this.calibrateMarker.pos[0], this.calibrateMarker.pos[1]])
+        for (let i=0;i<time;i++) {
+          const input = await this.$refs.facemesh.getEyes()
+          const output = [this.calibrateMarker.pos[0], this.calibrateMarker.pos[1]]
+          this.$store.commit("pushCalibrateData", { input: input, output: output })
+        }
+        await this.sleep(100)
+      },
+      train: function () {
+        return new Promise(async (resolve) => {
+          console.log("学習中です")
+          if (this.calibrateInputs.length > 0)
+            await Regression.train(this.calibrateInputs, this.calibrateOutputs)
+          console.log("学習が終わりました")
+          resolve()
+        })
+      },
       predict: async function () {
-        while (true) {
-          await this.sleep(100)
-          if (this.training === true) continue
+        this.calibrating_step = 5
+        while (this.calibrating_step === 5) {
+          await this.sleep(50)
           const input = await this.$refs.facemesh.getEyes()
           if (!input) continue
           const predicted_output = await Regression.predict(input)
           if (predicted_output !== null) {
             console.log(predicted_output)
-
-            let context = this.$refs.calibrate_screen.getContext("2d")
-            if (this.prev !== null)
-              context.clearRect(this.prev[0] * window.innerWidth / 100 - 8, this.prev[1] * window.innerHeight / 100 - 8, 16, 16)
-
-            context.beginPath()
-            context.arc(predicted_output[0] * window.innerWidth / 100, predicted_output[1] * window.innerHeight / 100, 6, 0, 2 * Math.PI, false)
-            context.fillStyle = "rgba(0,0,255)"
-            context.fill()
-            this.prev = predicted_output
+            this.predictMarker.pos = [predicted_output[0], predicted_output[1]]
           }
         }
       },
@@ -157,9 +186,25 @@
     height: 100%;
   }
   .calibrate-screen {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .calibrate-marker {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: #0D83FC;
+  }
+  .predict-marker {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: orange;
   }
   .description {
     position: absolute;
