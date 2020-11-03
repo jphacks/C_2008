@@ -4,7 +4,10 @@
       <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
       <canvas class="calibrate-screen" ref="calibrate_screen" @click="calibrate"></canvas>
       <el-card class="description">
-        <div style="font-size: 1.2em;">学習情報</div>
+        <div style="font-size: 1.2em;">
+          学習情報
+          <el-button type="danger" size="mini" round plain @click="reset">データの削除</el-button>
+        </div>
         <div>
           サンプル数: {{ calibrateInputs.length }}
         </div>
@@ -12,7 +15,7 @@
           キャリブレーションしたデータは<br/>
           ブラウザに自動で保存されます．<br/>
         </div>
-        <el-button type="danger" size="mini" round plain @click="resetCalibrateData">データの削除</el-button>
+        <el-button type="primary" size="large" round @click="train">このサンプルデータで学習する</el-button>
       </el-card>
     </div>
     <transition>
@@ -53,8 +56,11 @@
     data () {
       return {
         ready: false,
-        instruction: true,
-        prev: null
+        instruction: false,
+        prev: null,
+        training: false,
+        calibrating: false,
+        colors: ["#409EFF", "#67C23A", "#E6A23C", "#F56C6C"]
       }
     },
     computed: {
@@ -67,57 +73,72 @@
     },
     methods: {
       onReadyCalibrate: function () {
+        Regression.reset()
         this.ready = true
+        this.instruction = true
         this.predict()
       },
       calibrate: async function (e) {
         if (this.ready === false) return
+        if (this.training === true) return
+        if (this.calibrating === true) return
+        this.calibrating = true
+
         let context = this.$refs.calibrate_screen.getContext("2d")
 
-        context.beginPath()
-        context.arc(e.pageX, e.pageY, 8, 0, 2 * Math.PI, false)
-        context.fillStyle = "rgba(255,0,0)"
-        context.fill()
+        let x = e.pageX, y = e.pageY
 
+        context.beginPath()
+        context.arc(x, y, 8, 0, 2 * Math.PI, false)
+        context.fillStyle = this.colors[Math.floor(Math.random() * this.colors.length)]
+        context.fill()
 
         console.log("キャリブレーション")
         const input = await this.$refs.facemesh.getEyes()
-        const output = [e.pageX / window.innerWidth * 100, e.pageY / window.innerHeight * 100]
+        const output = [x / window.innerWidth * 100, y / window.innerHeight * 100]
         if (!input) return
         this.$store.commit("pushCalibrateData", { input: input, output: output })
 
-        // trainを呼び出すとweightが戻ってくる
-        await Regression.train(this.calibrateInputs, this.calibrateOutputs)
-        console.log("入力: ", input)
-        console.log("出力: ", output)
-
-        context.clearRect(e.pageX-8, e.pageY-8, 16, 16)
+        context.clearRect(x - 8, y- 8, 16, 16)
+        this.calibrating = false
+      },
+      train: async function () {
+        if (this.calibrateInputs && this.calibrateInputs.length > 0) {
+          this.training = true
+          console.log("学習なう")
+          await Regression.train(this.calibrateInputs, this.calibrateOutputs)
+          this.training = false
+          console.log("学習終わり！")
+        }
       },
       predict: async function () {
-        setInterval(async () => {
+        while (true) {
+          await this.sleep(100)
+          if (this.training === true) continue
           const input = await this.$refs.facemesh.getEyes()
-          if (!input) return
+          if (!input) continue
           const predicted_output = await Regression.predict(input)
-
-          console.log(predicted_output)
           if (predicted_output !== null) {
+            console.log(predicted_output)
+
             let context = this.$refs.calibrate_screen.getContext("2d")
             if (this.prev !== null)
-              context.clearRect(this.prev[0] * window.innerWidth / 100 - 8, this.prev[1] * window.innerWidth / 100 - 8, 16, 16)
+              context.clearRect(this.prev[0] * window.innerWidth / 100 - 8, this.prev[1] * window.innerHeight / 100 - 8, 16, 16)
 
             context.beginPath()
-            context.arc(predicted_output[0] * window.innerWidth / 100, predicted_output[1] * window.innerWidth / 100, 6, 0, 2 * Math.PI, false)
+            context.arc(predicted_output[0] * window.innerWidth / 100, predicted_output[1] * window.innerHeight / 100, 6, 0, 2 * Math.PI, false)
             context.fillStyle = "rgba(0,0,255)"
             context.fill()
             this.prev = predicted_output
           }
-        }, 500)
+        }
       },
       sleep: function (time) {
         return new Promise((resolve) => {setTimeout(() => { resolve() }, time)})
       },
-      resetCalibrateData: function () {
+      reset: function () {
         this.$store.commit("resetCalibrateData")
+        Regression.reset()
       }
     }
   }
