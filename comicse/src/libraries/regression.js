@@ -5,28 +5,35 @@ import config from '../../app_config'
 const eyeWidth = config.eyeWidth
 const eyeHeight = config.eyeHeight
 
-const ridgeParameter = Math.pow(10, -5);
+const ridgeParameter = Math.pow(10, -4);
 
-let model = tflayer.sequential();
+let model = null;
 let notTrained = true;
 
 export default {
+  reset: (async () => {
+    model = null;
+    model = tflayer.sequential();
+    model.add(tflayer.layers.dense({ units: 2, inputShape: [m], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
+    
+    model.compile({
+      loss: 'meanSquaredError',
+      optimizer: 'sgd'
+    });
+  }),
   train: (async (inputs, outputs) => { // 訓練関数（inputsは(N,10*6*2)の行列，outputsは(N,2)の行列）
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
     // outputs[0][1]...0番目のトレーニングサンプルの出力の1番目の数値
     var m = inputs[0].length;
+
+    if(inputs.length % 10){
+      return;
+    }
+
     var X = tf.tensor2d(inputs);
     var Y = tf.tensor2d(outputs);
 
     if(notTrained){
-      model = null;
-      model = tflayer.sequential();
-      model.add(tflayer.layers.dense({ units: 2, inputShape: [m], kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
-
-      model.compile({
-        loss: 'meanSquaredError',
-        optimizer: 'sgd'
-      });
       notTrained = false;
     }else{
       model.predict(tf.tensor2d(inputs[0], [1,m])).print();
