@@ -94,9 +94,9 @@
         context.clearRect(e.pageX-8, e.pageY-8, 16, 16)
       },
       predict: async function () {
-        while (true) {
+        setInterval(async () => {
           const input = await this.$refs.facemesh.getEyes()
-          if (!input) continue
+          if (!input) return
           const predicted_output = await Regression.predict(input)
 
           console.log(predicted_output)
@@ -111,9 +111,7 @@
             context.fill()
             this.prev = predicted_output
           }
-
-          this.sleep(100)
-        }
+        }, 500)
       },
       sleep: function (time) {
         return new Promise((resolve) => {setTimeout(() => { resolve() }, time)})

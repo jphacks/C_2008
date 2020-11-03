@@ -2,7 +2,8 @@
   <div>
     <video ref="facemeshvideo" :width="width" :height="height" autoplay="true" style="border-radius: 16px;"></video>
     <canvas ref="facemesheyeL" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
-    <canvas ref="facemesheyeR" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas>
+    <canvas ref="facemesheyeR" :width="eyeWidth" :height="eyeHeight" style="display: none"></canvas><br/>
+    <canvas ref="facemesh_debug_eye_resultL" :width="eyeWidth * 16" :height="2 * eyeHeight * 16"></canvas>
   </div>
 </template>
 <script>
@@ -61,6 +62,9 @@
           this.imageData2array(this.eyeR.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight))
         )
 
+        // デバッグように画面に表示する
+        this.showEyes(eyes)
+
         //  eyesを渡す
         this.$emit("getEyes", eyes)
         return eyes
@@ -69,7 +73,7 @@
       imageData2array: function (imageData) {
         const IMAGE_DATA_LENGTH = this.eyeWidth * this.eyeHeight
         const BRIGHTNESS = 256
-        const STEP = 5
+        const STEP = 1
 
         let gray = new Array(IMAGE_DATA_LENGTH)
         let histogram = new Array(BRIGHTNESS).fill(0)
@@ -96,6 +100,15 @@
         }
 
         return filtered_gray
+      },
+      showEyes: function (eyes) {
+        let eyeResult = this.$refs["facemesh_debug_eye_resultL"]
+        let context = eyeResult.getContext('2d')
+        for (let i=0;i<eyes.length;i++) {
+          let brightness = (Math.floor(eyes[i] * 255)).toString(16);
+          context.fillStyle = '#' + brightness + brightness + brightness
+          context.fillRect((i % this.eyeWidth) * 16, Math.floor(i / this.eyeWidth) * 16, 16, 16)
+        }
       }
     },
     mounted: async function () {
