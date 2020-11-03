@@ -2,3 +2,4 @@
 .idea/
 image_dataset/
 image_sourse/oneshot/なし/*.png
+!image_dataset/.gitkeep
