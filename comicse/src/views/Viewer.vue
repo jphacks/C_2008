@@ -36,6 +36,8 @@
           historyX: [],
           historyY: []
         },
+        readingFrame: 0,
+        readedFrame: 0,
         comicPages: [
           {
             imagePath: "/comic_pages/page0.jpg", // 漫画の画像のパス
@@ -203,9 +205,31 @@
             let x = this.predictMarker.historyX.slice(0, this.predictMarker.historyX.length).sort((a, b) => { return a - b })[Math.floor(this.predictMarker.historyX.length / 2)]
             let y = this.predictMarker.historyY.slice(0, this.predictMarker.historyY.length).sort((a, b) => { return a - b })[Math.floor(this.predictMarker.historyY.length / 2)]
 
+            for(let i=0; i<this.comicPages[0].frames.length; i++){
+              if(this.judgeInclusion(x, y, this.comicPages[0].frames[i].points)){
+                this.readingFrame = i;
+                // 新しいコマを読んだ時
+                if(this.readedFrame + 1 == this.readingFrame){
+                  this.readedFrame = this.readingFrame;
+                  this.comicPages[0].frames[i].sound?.play();
+                }
+              }
+            }
+
             this.predictMarker.pos = [x, y]
           }
         }
+      },
+      judgeInclusion: function(x, y, points){
+          let minX, maxX, minY, maxY;
+          for (let i=0;i<points.length;i++) {
+            if (!minX || minX > points[i].x) minX = points[i].x;
+            if (!maxX || maxX < points[i].x) maxX = points[i].x;
+            if (!minY || minY > points[i].y) minY = points[i].y;
+            if (!maxY || maxY < points[i].y) maxY = points[i].y;
+          }
+
+          return minX < x && x < maxX && minY < y && y < maxY;
       },
       viewPage: function (comicPage) {
         console.log("漫画ページを描写しています...")
