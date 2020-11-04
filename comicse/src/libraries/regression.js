@@ -58,3 +58,12 @@ function predict(input){
   result[1] = Math.max(0, Math.min(result[1], 100));
   return [result[0], result[1]];
 }
+
+async function save(){
+  await model.save('localstorage://gaze-model');
+}
+
+async function load(){
+  model = await model.load('localstorage://gaze-model');
+  notTrained = false;
+}
