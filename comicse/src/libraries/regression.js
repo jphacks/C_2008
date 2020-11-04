@@ -42,11 +42,19 @@ export default {
     console.log(history.history.loss);
     console.log(predict(inputs[0]));
 
+    await save();
+
   }),
   predict: (async (input) => { // 予測関数（inputは10*6*2次元のベクトル）
     if (notTrained === true) return null
     // input[10]...入力の10番目の数値
     return predict(input);
+  }),
+  save: (async () => {
+    await save();
+  }),
+  load: (async () => {
+    await load();
   })
 }
 
@@ -57,4 +65,13 @@ function predict(input){
   result[0] = Math.max(0, Math.min(result[0], 100));
   result[1] = Math.max(0, Math.min(result[1], 100));
   return [result[0], result[1]];
+}
+
+async function save(){
+  await model.save('localstorage://gaze-model');
+}
+
+async function load(){
+  model = await model.load('localstorage://gaze-model');
+  notTrained = false;
 }
