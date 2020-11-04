@@ -42,11 +42,19 @@ export default {
     console.log(history.history.loss);
     console.log(predict(inputs[0]));
 
+    await save();
+
   }),
   predict: (async (input) => { // 予測関数（inputは10*6*2次元のベクトル）
     if (notTrained === true) return null
     // input[10]...入力の10番目の数値
     return predict(input);
+  }),
+  save: (async () => {
+    await save();
+  }),
+  load: (async () => {
+    await load();
   })
 }
 
