@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Calibrate from '../views/Calibrate.vue'
+import Viewer from '../views/Viewer'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/calibrate',
     name: 'Calibrate',
     component: Calibrate
+  },
+  {
+    path: '/viewer',
+    name: 'Viewer',
+    component: Viewer
   }
 ]
 

@@ -11,6 +11,11 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+Vue.prototype.$sleep = function (time) {
+  return new Promise((resolve) => {setTimeout(() => { resolve() }, time)})
+},
+
+
 new Vue({
   router,
   store,

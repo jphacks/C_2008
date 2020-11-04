@@ -20,7 +20,7 @@
         COMIC SEはあなたの視線を学習して、<br/>場面に応じた効果音を鳴らす新しい電子漫画アプリです
       </div>
       <el-button @click="$router.push('/calibrate')" >キャリブレーションする</el-button>
-      <el-button>漫画を読む</el-button>
+      <el-button @click="$router.push('/viewer')">漫画を読む</el-button>
     </div>
   </div>
 </template>

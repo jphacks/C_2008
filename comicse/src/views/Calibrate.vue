@@ -22,6 +22,7 @@
             <el-button type="danger" @click="reset()" round size="mini" plain>データをリセットする</el-button>
             <el-button type="primary" @click="calibrating_step = 1">キャリブレーションする</el-button><br/>
             <el-button type="primary" @click="no_calibrate()">キャリブレーションせずに学習する</el-button>
+            <el-button type="primary" @click="$router.push('/viewer')" v-if="calibrating_step === 5">漫画を読む</el-button>
           </el-card>
         </div>
       </transition>
@@ -70,13 +71,11 @@
 <script>
   import FaceMesh from "../components/FaceMesh"
   import Regression from "../libraries/regression"
-  import { VueLoading } from 'vue-loading-template'
   import config from '../../app_config'
 
   export default {
     components: {
-      FaceMesh,
-      VueLoading
+      FaceMesh
     },
     data () {
       return {
@@ -125,7 +124,7 @@
         this.calibrating_step = 3
 
         this.calibrateMarker.pos = [50, 50]
-        await this.sleep(1000)
+        await this.$sleep(1000)
         for (let event of this.calibrateEvents) {
             await this.moveCalibrateMarker(event[0], event[1])
             await this.fetchCalibrateData(5)
@@ -147,18 +146,18 @@
         const step = Math.ceil(Math.sqrt((toX - fromX) * (toX - fromX) + (toY - fromY) * (toY - fromY)))
         for (let t=0;t<=step;t++) {
           this.calibrateMarker.pos = [(toX - fromX) * t / step + fromX, (toY - fromY) * t / step + fromY]
-          await this.sleep(10)
+          await this.$sleep(10)
         }
       },
       fetchCalibrateData: async function (time) {
-        await this.sleep(100)
+        await this.$sleep(100)
         console.log([this.calibrateMarker.pos[0], this.calibrateMarker.pos[1]])
         for (let i=0;i<time;i++) {
           const input = await this.$refs.facemesh.getEyes()
           const output = [this.calibrateMarker.pos[0], this.calibrateMarker.pos[1]]
           this.$store.commit("pushCalibrateData", { input: input, output: output })
         }
-        await this.sleep(100)
+        await this.$sleep(100)
       },
       train: function () {
         return new Promise(async (resolve) => {
@@ -172,7 +171,7 @@
       predict: async function () {
         this.calibrating_step = 5
         while (this.calibrating_step === 5) {
-          await this.sleep(10)
+          await this.$sleep(10)
           const input = await this.$refs.facemesh.getEyes()
           if (!input) continue
           const predicted_output = await Regression.predict(input)
@@ -190,9 +189,6 @@
             this.predictMarker.pos = [x, y]
           }
         }
-      },
-      sleep: function (time) {
-        return new Promise((resolve) => {setTimeout(() => { resolve() }, time)})
       },
       reset: function () {
         this.$store.commit("resetCalibrateData")
