@@ -3,7 +3,8 @@
     <div class="calibrate">
       <transition>
         <div v-show="calibrating_step === 2">
-          <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/>
+          <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/><br/>
+          カメラに顔が収まったら画面をクリックしてください
         </div>
       </transition>
       <div v-show="calibrating_step >= 2" class="calibrate-screen" @click="calibrate">
@@ -19,7 +20,8 @@
           <el-card class="description">
             データ数: {{ calibrateInputs.length }}<br/>
             <el-button type="danger" @click="reset()" round size="mini" plain>データをリセットする</el-button>
-            <el-button type="primary" @click="calibrating_step = 1">キャリブレーションする</el-button>
+            <el-button type="primary" @click="calibrating_step = 1">キャリブレーションする</el-button><br/>
+            <el-button type="primary" @click="no_calibrate()">キャリブレーションせずに学習する</el-button>
           </el-card>
         </div>
       </transition>
@@ -30,6 +32,17 @@
           <el-card style="width: 640px;padding: 32px 0;">
             <img src="@/assets/icons/loading.gif"/><br/>
             学習のための準備をしています<br/>
+            しばらくお待ちください
+          </el-card>
+        </div>
+      </div>
+    </transition>
+    <transition>
+      <div class="loading" v-if="calibrating_step === 4">
+        <div style="display: flex;flex-direction: row;justify-content: center">
+          <el-card style="width: 640px;padding: 32px 0;">
+            <img src="@/assets/icons/loading.gif"/><br/>
+            学習しています<br/>
             しばらくお待ちください
           </el-card>
         </div>
@@ -58,6 +71,7 @@
   import FaceMesh from "../components/FaceMesh"
   import Regression from "../libraries/regression"
   import { VueLoading } from 'vue-loading-template'
+  import config from '../../app_config'
 
   export default {
     components: {
@@ -73,7 +87,9 @@
           pos: null,
         },
         predictMarker: {
-          pos: null
+          pos: null,
+          historyX: [],
+          historyY: []
         },
         calibrateEvents: []
       }
@@ -120,7 +136,11 @@
         await this.train()
         this.predict()
       },
-
+      no_calibrate: async function () {
+        this.calibrating_step = 4
+        await this.train()
+        this.predict()
+      },
       moveCalibrateMarker: async function (toX, toY) {
         const fromX = this.calibrateMarker.pos[0]
         const fromY = this.calibrateMarker.pos[1]
@@ -152,13 +172,22 @@
       predict: async function () {
         this.calibrating_step = 5
         while (this.calibrating_step === 5) {
-          await this.sleep(50)
+          await this.sleep(10)
           const input = await this.$refs.facemesh.getEyes()
           if (!input) continue
           const predicted_output = await Regression.predict(input)
           if (predicted_output !== null) {
             console.log(predicted_output)
-            this.predictMarker.pos = [predicted_output[0], predicted_output[1]]
+            this.predictMarker.historyX.push(predicted_output[0])
+            if (this.predictMarker.historyX.length > config.kalmanNumber) this.predictMarker.historyX.shift()
+
+            this.predictMarker.historyY.push(predicted_output[1])
+            if (this.predictMarker.historyY.length > config.kalmanNumber) this.predictMarker.historyY.shift()
+
+            let x = this.predictMarker.historyX.slice(0, this.predictMarker.historyX.length).sort((a, b) => { return a - b })[Math.floor(this.predictMarker.historyX.length / 2)]
+            let y = this.predictMarker.historyY.slice(0, this.predictMarker.historyY.length).sort((a, b) => { return a - b })[Math.floor(this.predictMarker.historyY.length / 2)]
+
+            this.predictMarker.pos = [x, y]
           }
         }
       },
