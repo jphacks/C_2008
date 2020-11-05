@@ -62,8 +62,33 @@
           this.imageData2array(this.eyeR.getContext('2d').getImageData(0, 0, this.eyeWidth, this.eyeHeight))
         )
 
+        const unscaledPositions = faces[0].mesh
+        const headUp = unscaledPositions[10]
+        const headDown = unscaledPositions[152]
+        const eyeLeft = unscaledPositions[247]
+        const eyeRight = unscaledPositions[414]
+
+        // 前向きの傾き (ピッチ)
+        let pitch = Math.atan((headUp[2] - headDown[2]) / (headUp[1] - headDown[1]))
+        // 横向きの傾き (ヨー) なおロールはあんまり関係ないとみた
+        let yaw = Math.atan((eyeLeft[2] - eyeRight[2]) / (eyeLeft[0] - eyeRight[0]))
+
+        // ログ出力
+        // console.log("ピッチ(度) " + pitch * 180 / Math.PI)
+        // console.log("ヨー(度) " + yaw * 180 / Math.PI)
+
+        // 機械学習にかける情報に追加
+        eyes.push(pitch)
+        eyes.push(yaw)
+
         // デバッグように画面に表示する
         // this.showEyes(eyes)
+
+        // 目の目の間の中心座標 (カメラ座標) キャリブレーション時にはあまり顔を動かさない為、学習が進まない可能性
+        // const eyeCenter = positions[6]
+        // eyes.push(eyeCenter[0] / this.width)
+        // eyes.push(eyeCenter[1] / this.height)
+        // console(eyeCenter)
 
         //  eyesを渡す
         this.$emit("getEyes", eyes)

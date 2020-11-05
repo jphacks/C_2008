@@ -16,7 +16,7 @@ export default {
 
     model = null;
     model = tflayer.sequential();
-    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
+    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2 + 2], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
 
     model.compile({
       loss: 'meanSquaredError',
