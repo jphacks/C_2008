@@ -3,3 +3,16 @@
 image_dataset/
 image_sourse/oneshot/なし/*.png
 !image_dataset/.gitkeep
+.vscode/
+*.csv
+model/b0-1/
+model/b1/
+model/b3/
+model/b4/
+model/b5/
+model/best/b1/
+model/best/b2/
+model/best/b3/
+model/best/b4/
+model/best/b5/
+model/b2/
