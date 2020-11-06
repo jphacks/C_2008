@@ -256,6 +256,10 @@
     text-align: center;
     width: 100%;
     height: 100%;
+    background-image: url(/comic_pages/empty_comic.png);
+    background-position: center;
+    background-size: 90% 95%;
+    background-repeat: no-repeat;
   }
   .calibrate-screen {
     position: fixed;
