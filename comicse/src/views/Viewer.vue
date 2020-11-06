@@ -1,8 +1,7 @@
 <template>
   <div class="viewer">
     <canvas ref="viewerCanvas"></canvas>
-    <FaceMesh ref="facemesh" @onready="onReadyPredict"/><br/>
-    カメラに顔が収まったら画面をクリックしてください
+    <FaceMesh ref="facemesh" @onready="onReadyPredict"/>
     <div class="predict-marker"
          v-if="predictMarker.pos !== null"
          :style="{left: (predictMarker.pos[0] / 100 * window.width - 16) + 'px', top: (predictMarker.pos[1] / 100 * window.height - 16) + 'px' }"></div>
@@ -255,7 +254,7 @@
           this.viewerPadding.left, this.viewerPadding.top, this.viewerPadding.width, this.viewerPadding.height)
 
         // コマを薄く表示する
-        this.viewerCanvasContext.fillStyle = '#0000cd10'
+        this.viewerCanvasContext.fillStyle = '#0000cd80'
         for (let frame of comicPage.frames) {
 
           this.viewerCanvasContext.beginPath()
