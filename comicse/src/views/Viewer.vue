@@ -196,25 +196,6 @@
           if (!input) continue
           let predicted_output = await Regression.predict(input)
           if (predicted_output !== null) {
-            // 120にピッチ、121にヨーが入ってる
-            // const pitch = input[120]
-            // const yaw = input[121]
-
-            // 首の角度 (ヨー) をもとにx座標に補正を加える ちょっと大げさすぎるので、比率下げても良いかも
-            // console.log("補正前x " + predicted_output[0])
-            // predicted_output[0] = 50 - predicted_output[0]
-            // predicted_output[0] += (predicted_output[0] * predicted_output[0] + 10000) / ((100 / Math.tan(yaw)) - predicted_output[0])
-            // predicted_output[0] = 50 - predicted_output[0]
-            // console.log("補正後x " + predicted_output[0])
-
-            // 首の角度 (ピッチ) をもとにy座標に補正を加える ちょっと大げさすぎるので、比率下げても良いかも
-            // console.log("補正前y " + predicted_output[1])
-            // predicted_output[1] = 50 - predicted_output[1]
-            // predicted_output[1] += (predicted_output[1] * predicted_output[1] + 10000) / ((100 / Math.tan(pitch)) - predicted_output[1])
-            // predicted_output[1] = 50 - predicted_output[1]
-            // console.log("補正後y " + predicted_output[1])
-
-            // 顔の大きさを使った方法も試したい
 
             console.log(predicted_output)
             this.predictMarker.historyX.push(predicted_output[0])
