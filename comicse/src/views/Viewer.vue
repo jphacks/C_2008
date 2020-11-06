@@ -20,6 +20,8 @@
       return {
         viewerCanvas: null,
         viewerCanvasContext: null,
+        // ビューアーのスケールです. 1が等倍です.
+        viewerScale: 0.8,
         window: {
           width: null,
           height: null
@@ -192,8 +194,28 @@
           await this.$sleep(10)
           const input = await this.$refs.facemesh.getEyes()
           if (!input) continue
-          const predicted_output = await Regression.predict(input)
+          let predicted_output = await Regression.predict(input)
           if (predicted_output !== null) {
+            // 120にピッチ、121にヨーが入ってる
+            // const pitch = input[120]
+            // const yaw = input[121]
+
+            // 首の角度 (ヨー) をもとにx座標に補正を加える ちょっと大げさすぎるので、比率下げても良いかも
+            // console.log("補正前x " + predicted_output[0])
+            // predicted_output[0] = 50 - predicted_output[0]
+            // predicted_output[0] += (predicted_output[0] * predicted_output[0] + 10000) / ((100 / Math.tan(yaw)) - predicted_output[0])
+            // predicted_output[0] = 50 - predicted_output[0]
+            // console.log("補正後x " + predicted_output[0])
+
+            // 首の角度 (ピッチ) をもとにy座標に補正を加える ちょっと大げさすぎるので、比率下げても良いかも
+            // console.log("補正前y " + predicted_output[1])
+            // predicted_output[1] = 50 - predicted_output[1]
+            // predicted_output[1] += (predicted_output[1] * predicted_output[1] + 10000) / ((100 / Math.tan(pitch)) - predicted_output[1])
+            // predicted_output[1] = 50 - predicted_output[1]
+            // console.log("補正後y " + predicted_output[1])
+
+            // 顔の大きさを使った方法も試したい
+
             console.log(predicted_output)
             this.predictMarker.historyX.push(predicted_output[0])
             if (this.predictMarker.historyX.length > config.kalmanNumber) this.predictMarker.historyX.shift()
@@ -228,7 +250,13 @@
             if (!maxY || maxY < points[i].y) maxY = points[i].y;
           }
 
+          minX = this.viewerScale * minX + (1 - this.viewerScale) * 50
+          minY = this.viewerScale * minY + (1 - this.viewerScale) * 50
+          maxX = this.viewerScale * maxX + (1 - this.viewerScale) * 50
+          maxY = this.viewerScale * maxY + (1 - this.viewerScale) * 50
+
           return minX < x && x < maxX && minY < y && y < maxY;
+          
       },
       viewPage: function (comicPage) {
         console.log("漫画ページを描写しています...")
@@ -236,16 +264,16 @@
         // 元画像の比率を計算して，比率を保持したまま画面中央に表示できるようにする．
         if (this.window.width / this.window.height > comicPage.image.width / comicPage.image.height) { // 画面が漫画よりさらに横長の場合
           console.log("画面が漫画より横長の場合")
-          this.viewerPadding.top = 0
-          this.viewerPadding.left = (this.window.width - comicPage.image.width / comicPage.image.height * this.window.height) / 2
-          this.viewerPadding.width = comicPage.image.width / comicPage.image.height * this.window.height
-          this.viewerPadding.height = this.window.height
+          this.viewerPadding.top = (1-this.viewerScale) * this.window.height / 2
+          this.viewerPadding.left = (this.window.width - this.viewerScale * comicPage.image.width / comicPage.image.height * this.window.height) / 2
+          this.viewerPadding.width = this.viewerScale * (comicPage.image.width / comicPage.image.height * this.window.height)
+          this.viewerPadding.height = this.viewerScale * this.window.height
         } else{
           console.log("画面が漫画より縦長の場合")
-          this.viewerPadding.top = (this.window.height - comicPage.image.height / comicPage.image.width * this.window.width) / 2
-          this.viewerPadding.left = 0
-          this.viewerPadding.width = this.window.width
-          this.viewerPadding.height = comicPage.image.height / comicPage.image.width * this.window.width
+          this.viewerPadding.top = (this.window.height - this.viewerScale * comicPage.image.height / comicPage.image.width * this.window.width) / 2
+          this.viewerPadding.left = (1-this.viewerScale) * this.window.width / 2
+          this.viewerPadding.width = this.viewerScale * this.window.width
+          this.viewerPadding.height = this.viewerScale * (comicPage.image.height / comicPage.image.width * this.window.width)
         }
 
         // 漫画画像を描写
