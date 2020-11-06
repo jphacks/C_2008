@@ -4,7 +4,7 @@
 
 ## 漫画 × Tech
 
-<img src="https://github.com/jphacks/C_2008/blob/master/comicse/src/assets/effects/dodon.png" width="200">
+<img src="https://github.com/jphacks/C_2008/blob/master/comicse/src/assets/effects/dodon.png" width="100">
 
 <!-- 漫画は好きですか？   -->
 好きな漫画はありますか？  
@@ -19,7 +19,8 @@
 わくわくが止まりません.  
 <!-- それでは一緒に次の1ページを見てみましょう.   -->
 
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zu.png" width="200">
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zu.png" width="100">
 
 ### 背景
 電子書籍が増えてきました.  
@@ -40,10 +41,10 @@
 音が付いたあの漫画をもう一度読み直してみたい.  
 漫画を読むだけじゃなくて、**漫画を聴ける**時代が来たら面白いじゃないですか.
 
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/shubaba.png" width="230">
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/shubaba.png" width="190">
 
 ### 製品説明（具体的な製品の説明）
-実際に開発したサイトの画像とか載せて説明を書く
 <!-- ![](https://github.com/jphacks/C_2008/) -->
 Webサイトを開いたらまず、**「キャリブレーションする」** のボタンを押してください.  
 ![タイトルページ](https://github.com/jphacks/C_2008/blob/master/readme_resources/web_title.png)
@@ -57,7 +58,8 @@ Webサイトを開いたらまず、**「キャリブレーションする」** 
 新しい電子漫画はいかがですか？  
 ![漫画ページ](https://github.com/jphacks/C_2008/blob/master/readme_resources/web_comic.png)
 
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/gyun.png" width="250">
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/gyun.png" width="150">
 
 ### 特長
 #### 1. 漫画に描かれた効果音が鳴る
@@ -90,9 +92,12 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 既存の技術を超えるアイトラッキングの開発に挑戦しました
 * 漫画のコマから音を推測するAIの開発に取り組みました.
 
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="250">
+<br>
+
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">   <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">   <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">
 
 ## 開発技術
+
 ### ハッカソンで開発した独自機能・技術
 * アイトラッキングシステムを開発いたしました.
 * 漫画のコマから音を推測するAIを開発いたしました.
@@ -106,9 +111,9 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 
 
 ### フレームワーク・ライブラリ・モジュール
-* TensorFlow.js
-* TensorFlow (Python)
-* AWS
+* [TensorFlow.js](https://www.tensorflow.org/js?hl=ja)
+* [TensorFlow (Python)](https://www.tensorflow.org/?hl=ja)
+* [AWS](https://aws.amazon.com/jp/)
 * Flask
 * vue.js
 * Facemesh
@@ -123,9 +128,10 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://arxiv.org/abs/1905.11946)
 * [MediaPipe Facemesh (GitHub)](https://github.com/tensorflow/tfjs-models/tree/master/facemesh)
 
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="250">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="150">
 
 ## 今後の展望
+
 現システムでは、コマにどんな音を割り振るのかという情報は事前に設定しておく必要があります.  
 これはアナログの本を電子化する手間を考えれば、大したことはないかもしれません.  
 
