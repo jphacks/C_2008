@@ -3,20 +3,26 @@
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
 
 ## 漫画 × Tech
+
+<img src="https://github.com/jphacks/C_2008/blob/master/comicse/src/assets/effects/dodon.png" width="100">
+
 <!-- 漫画は好きですか？   -->
 好きな漫画はありますか？  
 面白いですよね.  
 
 じゃあその漫画に**音**がついたらどうでしょう？  
-コマを見た瞬間にそこに描かれた音が鳴るんです.
+コマを見た瞬間にそこに描かれた音が鳴るんです.  
 
 迫力のあるワンシーンに効果音が付いたら？  
-ここぞというタイミングで音楽が流れたら？
+ここぞというタイミングで音楽が流れたら？  
 
 わくわくが止まりません.  
 <!-- それでは一緒に次の1ページを見てみましょう.   -->
 
-### 背景(製品開発のきっかけ、課題等）
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zu.png" width="100">
+
+### 背景
 電子書籍が増えてきました.  
 アナログの本が時代の波にのりデジタルに変わっています.  
 電子書籍は大量の本を持ち歩けて、文字の検索やメモまで出来てしまいます.  
@@ -26,24 +32,34 @@
 
 私たちはデジタルになったことを活かし、漫画を鳴らすことにしました.  
 これで漫画は新たな力を手にし、よりリッチになるのでは.  
-**漫画とアニメの間のような新しい表現、新しい価値**が生まれるのではないでしょうか.
+**漫画とアニメの間のような新しい表現、新しい価値**が生まれるのではないでしょうか.  
 
 音は大切です.  
 その場の空気感や臨場感をまざまざと伝えてくれます.  
 映画やアニメを見るなら、きっと素晴らしいタイミングで流れる音楽に心を動かされた経験があるでしょう.  
 
 音が付いたあの漫画をもう一度読み直してみたい.  
-漫画を読むだけじゃなくて、  
-**漫画を聴ける**時代が来たら面白いじゃないですか.
+漫画を読むだけじゃなくて、**漫画を聴ける**時代が来たら面白いじゃないですか.
+
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/shubaba.png" width="190">
 
 ### 製品説明（具体的な製品の説明）
-実際に開発したサイトの画像とか載せて説明を書く
 <!-- ![](https://github.com/jphacks/C_2008/) -->
+Webサイトを開いたらまず、**「キャリブレーションする」** のボタンを押してください.  
 ![タイトルページ](https://github.com/jphacks/C_2008/blob/master/readme_resources/web_title.png)
+
+画面が表示されたら、青い○を目で追ってください.  
+これによってブラウザは、あなたの視線を学習します.  
 ![キャリブレーション](https://github.com/jphacks/C_2008/blob/master/readme_resources/web_calibration.png)
+
+これで準備は完了です！  
+漫画のコマを見るだけで、場面に応じた効果音を鳴らしてくれます！  
+新しい電子漫画はいかがですか？  
 ![漫画ページ](https://github.com/jphacks/C_2008/blob/master/readme_resources/web_comic.png)
 
-漫画のコマを見ると音がなります.  
+<br>
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/gyun.png" width="150">
 
 ### 特長
 #### 1. 漫画に描かれた効果音が鳴る
@@ -67,7 +83,7 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 従って、ブラウザで機械学習を行います.
 
 #### 解決出来ること
-みなさんに新しいエンターテインメントと価値観を提供できます.
+みなさんに新しいエンターテインメントと価値観を提供できます.  
 
 #### 注力したこと（こだわり等）
 * ユーザビリティの高いWebサイトを作成しました
@@ -76,7 +92,12 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 既存の技術を超えるアイトラッキングの開発に挑戦しました
 * 漫画のコマから音を推測するAIの開発に取り組みました.
 
+<br>
+
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">   <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">   <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zawazawa.gif" width="150">
+
 ## 開発技術
+
 ### ハッカソンで開発した独自機能・技術
 * アイトラッキングシステムを開発いたしました.
 * 漫画のコマから音を推測するAIを開発いたしました.
@@ -90,9 +111,9 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 
 
 ### フレームワーク・ライブラリ・モジュール
-* TensorFlow.js
-* TensorFlow (Python)
-* AWS
+* [TensorFlow.js](https://www.tensorflow.org/js?hl=ja)
+* [TensorFlow (Python)](https://www.tensorflow.org/?hl=ja)
+* [AWS](https://aws.amazon.com/jp/)
 * Flask
 * vue.js
 * Facemesh
@@ -107,7 +128,10 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://arxiv.org/abs/1905.11946)
 * [MediaPipe Facemesh (GitHub)](https://github.com/tensorflow/tfjs-models/tree/master/facemesh)
 
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="150">
+
 ## 今後の展望
+
 現システムでは、コマにどんな音を割り振るのかという情報は事前に設定しておく必要があります.  
 これはアナログの本を電子化する手間を考えれば、大したことはないかもしれません.  
 
