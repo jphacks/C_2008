@@ -16,7 +16,7 @@ export default {
 
     model = null;
     model = tflayer.sequential();
-    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2 + 2], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
+    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2 + 4], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
 
     model.compile({
       loss: 'meanSquaredError',
@@ -64,6 +64,16 @@ function predict(input){
   const result = output[0];
   result[0] = Math.max(0, Math.min(result[0], 100));
   result[1] = Math.max(0, Math.min(result[1], 100));
+
+  // 122, 123は顔の位置の情報
+  const faceX = input[122]
+  const faceY = input[123]
+  // どうやら右にいるほど値が小さそう
+  result[0] = result[0] - (faceX - 0.5) * 100
+  result[1] = result[1] + (faceY - 0.5) * 100
+  
+  console.log(output[0]);
+
   return [result[0], result[1]];
 }
 

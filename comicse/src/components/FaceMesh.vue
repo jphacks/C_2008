@@ -85,10 +85,10 @@
         // this.showEyes(eyes)
 
         // 目の目の間の中心座標 (カメラ座標) キャリブレーション時にはあまり顔を動かさない為、学習が進まない可能性
-        // const eyeCenter = positions[6]
-        // eyes.push(eyeCenter[0] / this.width)
-        // eyes.push(eyeCenter[1] / this.height)
-        // console(eyeCenter)
+        const eyeCenter = positions[6]
+        eyes.push(eyeCenter[0] / this.width)
+        eyes.push(eyeCenter[1] / this.height)
+        console.log(eyeCenter)
 
         //  eyesを渡す
         this.$emit("getEyes", eyes)
