@@ -112,12 +112,59 @@
         this.calibrating_step = 0
       },
       createCalibrateEvents: function () {
-        for (let y = 5;y <= 85;y+= 20) {
-          for (let x = 5;x <= 95;x += 10)
-            this.calibrateEvents.push([x, y])
-          for (let x = 95;x >= 5;x -= 10)
-            this.calibrateEvents.push([x, y + 10])
+        // キャリブレーションの範囲倍率
+        let scaleX = 0.5
+        let scaleY = 0.5
+        // 左上から右下に横に走査する手法
+        // for (let y = 5 / scaleY; y <= 90 - 5 / scaleY; y+= 20) {
+        //   for (let x = 5 / scaleX; x <= 100 - 5 / scaleX; x += 10)
+        //     this.calibrateEvents.push([x, y])
+        //   for (let x = 100 - 5 / scaleX; x >= 5 / scaleX; x -= 10)
+        //     this.calibrateEvents.push([x, y + 10])
+        // }
+
+        // 左上から右下に縦に走査する手法
+        // for (let x = 5 / scaleX; x <= 100 - 5 / scaleX; x += 20) {
+        //   for (let y = 5 / scaleY; y <= 90 - 5 / scaleY; y += 10)
+        //     this.calibrateEvents.push([x, y])
+        //   for (let y = 90 - 5 / scaleY; y >= 5 / scaleY; y -= 10)
+        //     this.calibrateEvents.push([x + 10, y])
+        // }
+
+        // 右上から左下に縦に走査する手法
+        // for (let x = 100 - 5 / scaleX; x >= 5 / scaleX; x -= 20) {
+        //   for (let y = 5 / scaleY; y <= 90 - 5 / scaleY; y += 10)
+        //     this.calibrateEvents.push([x, y])
+        //   for (let y = 90 - 5 / scaleY; y >= 5 / scaleY; y -= 10)
+        //     this.calibrateEvents.push([x + 10, y])
+        // }
+
+        // 左上、右下、右上、左下、中上、中下、中左、中右の順で操作(上下の動きを意識)
+        for(let i=0; i < 5; i++){
+          let scaledX = 5 / scaleX// + i * 5
+          let scaledY = 5 / scaleY// + i * 5
+          let left = scaledX
+          let right = 100 - scaledX
+          let up = scaledY
+          let down = 100 - scaledY
+          let center = 50
+          this.calibrateEvents.push([left, up]) 
+          this.calibrateEvents.push([right, down]) 
+          this.calibrateEvents.push([right, up])
+          this.calibrateEvents.push([left, down])
+          this.calibrateEvents.push([center, up])
+          this.calibrateEvents.push([center, down])
+          this.calibrateEvents.push([left, center])
+          this.calibrateEvents.push([right, center])
         }
+
+        // ランダムな点を見る手法
+        // for (let i=0; i<40; i++) {
+        //   let x = Math.round(Math.random() * 100)
+        //   let y = Math.round(Math.random() * 100)
+        //   console.log([x, y])
+        //   this.calibrateEvents.push([x, y])
+        // }
       },
       calibrate: async function () {
         if (this.calibrating_step !== 2) return
