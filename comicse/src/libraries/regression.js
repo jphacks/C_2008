@@ -34,6 +34,7 @@ export default {
     }));
     model.add(tflayer.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
     model.add(tflayer.layers.flatten());
+    model.add(tflayer.layers.dense({ units: 32}));
     model.add(tflayer.layers.dense({ units: 2 }));
 
     model.compile({
