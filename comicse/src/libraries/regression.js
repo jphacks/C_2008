@@ -16,12 +16,32 @@ export default {
 
     model = null;
     model = tflayer.sequential();
-    model.add(tflayer.layers.dense({ units: 2, inputShape: [eyeWidth * eyeHeight * 2], useBias: false, kernelRegularizer: tflayer.regularizers.l2({ridgeParameter}) }));
+    model.add(tflayer.layers.conv2d({
+      inputShape: [eyeHeight * 2, eyeWidth, 1],
+      kernelSize: 3,
+      filters: 8,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling'
+    }));
+    model.add(tflayer.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
+    model.add(tflayer.layers.conv2d({
+      kernelSize: 3,
+      filters: 16,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling'
+    }));
+    model.add(tflayer.layers.maxPooling2d({poolSize: [2, 2], strides: [2, 2]}));
+    model.add(tflayer.layers.flatten());
+    model.add(tflayer.layers.dense({ units: 2 }));
 
     model.compile({
-      loss: 'meanSquaredError',
-      optimizer: 'sgd'
+      loss: tf.losses.huberLoss,
+      optimizer: 'adam'
     });
+
+    model.summary();
   }),
   train: (async (inputs, outputs) => { // 訓練関数（inputsは(N,10*6*2)の行列，outputsは(N,2)の行列）
     // inputs[0][10]...0番目のトレーニングサンプルの入力の10番目の数値
@@ -29,15 +49,16 @@ export default {
     var m = inputs[0].length;
 
     var X = tf.tensor2d(inputs);
-    var Y = tf.tensor2d(outputs);
+    X = X.reshape([inputs.length, eyeHeight * 2, eyeWidth, 1])
+    var Y = tf.tensor2d(outputs).div(100);
 
     if(notTrained){
       notTrained = false;
     }else{
-      model.predict(tf.tensor2d(inputs[0], [1,m])).print();
+      console.log(predict(inputs[0]));
     }
 
-    const history = await model.fit(X, Y, { epochs: 100 });
+    const history = await model.fit(X, Y, { batchSize: 128, epochs: 100 });
 
     console.log(history.history.loss);
     console.log(predict(inputs[0]));
@@ -59,8 +80,7 @@ export default {
 }
 
 function predict(input){
-  let m = input.length;
-  const output = model.predict(tf.tensor2d(input, [1,m])).arraySync();
+  const output = model.predict(tf.tensor4d(input, [1, eyeHeight * 2, eyeWidth, 1])).mul(100).arraySync();
   const result = output[0];
   result[0] = Math.max(0, Math.min(result[0], 100));
   result[1] = Math.max(0, Math.min(result[1], 100));
