@@ -137,7 +137,13 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://arxiv.org/abs/1905.11946)
 * [MediaPipe Facemesh (GitHub)](https://github.com/tensorflow/tfjs-models/tree/master/facemesh)
 
+### ライセンス
+* 効果音素材：ポケットサウンド – [https://pocket-se.info/](https://pocket-se.info/)
+* ニコニ・コモンズ
+* 音楽：魔王魂
+
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="150">
+
 
 ## 今後の展望
 
