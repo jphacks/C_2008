@@ -22,6 +22,10 @@
 <br>
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/zu.png" width="100">
 
+### デモ
+**スマートフォンではなく，PCからご利用ください．**
+[https://comic-se.work/](https://comic-se.work/)
+
 ### 背景
 電子書籍が増えてきました.  
 アナログの本が時代の波にのりデジタルに変わっています.  
@@ -101,6 +105,7 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 ### ハッカソンで開発した独自機能・技術
 * アイトラッキングシステムを開発いたしました.
 * 漫画のコマから音を推測するAIを開発いたしました.
+* くわしくは[こちらのpdf](https://comic-se.work/docs/technology.pdf)に成果をまとめてあります．ご覧ください．
 
 <!-- * 独自で開発したものの内容をこちらに記載してください -->
 <!-- * 特に力を入れた部分をファイルリンク、またはcommit_idを記載してください。 -->
@@ -116,7 +121,7 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * [AWS](https://aws.amazon.com/jp/)
 * Flask
 * vue.js
-* Facemesh
+* 学習済みFacemeshモデル
 * EfficientNet
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png" width="300">
 
