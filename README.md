@@ -124,6 +124,8 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 学習済みFacemeshモデル
 * EfficientNet
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/getEyes.png">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/cnn.png">
 
 ### デバイス
 * PCに内蔵カメラまたはWebカメラがあれば利用できます
