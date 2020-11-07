@@ -4,7 +4,9 @@
       <transition>
         <div v-show="calibrating_step === 2">
           <FaceMesh ref="facemesh" @onready="onReadyCalibrate"/><br/>
-          カメラに顔が収まったら画面をクリックしてください
+          <div style="padding: 0.5em;background: rgba(255,255,255,0.95);border-radius: 10px;font-size: 1.5em;">
+            カメラに顔が収まったら画面をクリックしてください
+          </div>
         </div>
       </transition>
       <div v-show="calibrating_step >= 2" class="calibrate-screen" @click="calibrate">
@@ -19,9 +21,10 @@
         <div v-show="calibrating_step === 0 || calibrating_step === 5">
           <el-card class="description">
             データ数: {{ calibrateInputs.length }}<br/>
-            <el-button type="danger" @click="reset()" round size="mini" plain>データをリセットする</el-button>
-            <el-button type="primary" @click="calibrating_step = 1">キャリブレーションする</el-button><br/>
-            <el-button type="primary" @click="no_calibrate()">キャリブレーションせずに学習する</el-button>
+            <!--<el-button type="danger" @click="reset()" round size="mini" plain>データをリセットする</el-button>//-->
+            <el-button type="primary" @click="calibrating_step = 1" v-if="calibrating_step === 0">キャリブレーションを行う</el-button>
+            <el-button type="primary" @click="calibrating_step = 1" v-else>キャリブレーションをもう一度行う</el-button><br/>
+            <!--<el-button type="primary" @click="no_calibrate()">キャリブレーションせずに学習する</el-button>//-->
             <el-button type="primary" @click="$router.push('/viewer')" v-if="calibrating_step === 5">漫画を読む</el-button>
           </el-card>
         </div>
@@ -53,6 +56,7 @@
       title="キャリブレーション"
       :visible.sync="instruction"
       width="40%">
+      <div style="text-align: center;font-size: 2em;color: #0D83FC;padding-bottom: 32px;">青いマーカーを目で追いかけてください</div>
       <ol>
         <li><span style="color: #0D83FC">明るい部屋</span>で，画面中央のカメラに<span style="color: #0D83FC">顔全体が映るように</span>してください</li>
         <li>準備ができたら画面をクリックすると，<span style="color: #0D83FC">青いマーカーが画面中央に現れます</span></li>
@@ -107,9 +111,10 @@
     },
     methods: {
       onReadyCalibrate: function () {
+        this.$store.commit("resetCalibrateData")
         Regression.reset()
         this.ready = true
-        this.calibrating_step = 0
+        this.calibrating_step = 1
       },
       createCalibrateEvents: function () {
         // キャリブレーションの範囲倍率
@@ -148,8 +153,8 @@
           let up = scaledY
           let down = 100 - scaledY
           let center = 50
-          this.calibrateEvents.push([left, up]) 
-          this.calibrateEvents.push([right, down]) 
+          this.calibrateEvents.push([left, up])
+          this.calibrateEvents.push([right, down])
           this.calibrateEvents.push([right, up])
           this.calibrateEvents.push([left, down])
           this.calibrateEvents.push([center, up])
