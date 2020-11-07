@@ -11,6 +11,11 @@ app = Flask(__name__,
 def index():
     return render_template('index.html')
 
+# Let's encrypt
+@app.route('/.well-known/acme-challenge/<filename>')
+def well_known(filename):
+    return render_template('.well-known/acme-challenge/'+ filename)
+
 if __name__ == '__main__':
     print(app.url_map)
     app.run()
