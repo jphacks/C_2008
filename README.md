@@ -128,6 +128,9 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/getEyes.png">
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/cnn.png">
 
+我々が開発したアイトラッキング技術の詳細については下記をご覧ください.  
+[JPHACKSにおけるアイトラッキング技術の開発](https://comic-se.work/docs/technology.pdf)
+
 ### デバイス
 * PCに内蔵カメラまたはWebカメラがあれば利用できます
 
@@ -141,10 +144,8 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 効果音素材：ポケットサウンド – [https://pocket-se.info/](https://pocket-se.info/)
 * ニコニ・コモンズ
 * 音楽：魔王魂
-* マンガ素材：ブラックジャックによろしく　無料素材集 - [https://www.tadapic.com/blackjack.php](https://www.tadapic.com/blackjack.php)
 
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="150">
-
 
 ## 今後の展望
 
