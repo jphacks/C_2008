@@ -282,9 +282,9 @@
   }
   .predict-marker {
     position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
     background-color: orange;
   }
   .description {

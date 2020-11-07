@@ -256,7 +256,7 @@
           maxY = this.viewerScale * maxY + (1 - this.viewerScale) * 50
 
           return minX < x && x < maxX && minY < y && y < maxY;
-          
+
       },
       viewPage: function (comicPage) {
         console.log("漫画ページを描写しています...")
@@ -307,5 +307,12 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+  }
+  .predict-marker {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background-color: orange;
   }
 </style>

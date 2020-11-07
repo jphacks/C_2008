@@ -103,8 +103,8 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 ## 開発技術
 
 ### ハッカソンで開発した独自機能・技術
-* アイトラッキングシステムを開発いたしました.
-* 漫画のコマから音を推測するAIを開発いたしました.
+* アイトラッキングシステムを0から開発いたしました.
+* 漫画のコマから音を推測するAIを0から開発いたしました.
 * くわしくは[こちらのpdf](https://comic-se.work/docs/technology.pdf)に成果をまとめてあります．ご覧ください．
 
 <!-- * 独自で開発したものの内容をこちらに記載してください -->
@@ -118,11 +118,12 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 ### フレームワーク・ライブラリ・モジュール
 * [TensorFlow.js](https://www.tensorflow.org/js?hl=ja)
 * [TensorFlow (Python)](https://www.tensorflow.org/?hl=ja)
-* [AWS](https://aws.amazon.com/jp/)
+* [AWS EC2](https://aws.amazon.com/jp/)
 * Flask
 * vue.js
 * 学習済みFacemeshモデル
 * EfficientNet
+* Let's encrypt（webカメラがhttp通信で動作しないためhttps通信化）
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png">
 
 ### デバイス
