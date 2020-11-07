@@ -48,6 +48,7 @@
                 soundPath: "/comic_sounds/katakata.wav", // 音声のデータ
                 hellSoundPath: "/comic_sounds/hell/gakugaku.m4a", // 地獄モードの音声データパス
                 sound: null, // 音声を扱う際に「音声オブジェクト」としてデータを保持する必要があるので変数を作っておく
+                isSoundPlaying: false,
                 points: [
                   { x: 83.1, y: 4 },
                   { x: 98.9, y: 4 },
@@ -59,6 +60,7 @@
                 soundPath: null,
                 hellSoundPath: null,
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 52, y: 4 },
                   { x: 82.6, y: 4 },
@@ -70,6 +72,7 @@
                 soundPath: "/comic_sounds/puchin.wav",
                 hellSoundPath: "/comic_sounds/hell/putin.m4a",
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 52, y: 29.5 },
                   { x: 98.9, y: 29.5 },
@@ -81,6 +84,7 @@
                 soundPath: "/comic_sounds/mowaaan.mp3",
                 hellSoundPath: "/comic_sounds/hell/zowa.m4a",
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 77.5, y: 48.5 },
                   { x: 98.9, y: 48.5 },
@@ -92,6 +96,7 @@
                 soundPath: null,
                 hellSoundPath: "/comic_sounds/hell/ha.m4a",
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 52, y: 49 },
                   { x: 77, y: 49 },
@@ -103,6 +108,7 @@
                 soundPath: null,
                 hellSoundPath: "/comic_sounds/hell/n.m4a",
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 52, y: 67 },
                   { x: 77, y: 67 },
@@ -114,6 +120,7 @@
                 soundPath: "/comic_sounds/zuun.mp3",
                 hellSoundPath: "/comic_sounds/hell/zuuuun_shunshun.m4a",
                 sound: null,
+                isSoundPlaying: false,
                 points: [
                   { x: 1, y: 4 },
                   { x: 48, y: 4 },
@@ -147,7 +154,13 @@
       await this.loadComicImage(comicPage.imagePath).then((image) => { comicPage.image = image })
       for (let frame of comicPage.frames) {
         if(frame.soundPath !== null)
-          await this.loadComicSound(frame.soundPath).then((sound) => { frame.sound = sound })
+          await this.loadComicSound(frame.soundPath).then((sound) => {
+            frame.sound = sound
+            sound.addEventListener('ended', () => {
+              console.log("音が終わりました")
+              frame.isSoundPlaying = false
+            })
+          })
       }
 
       // 画面を表示
@@ -228,12 +241,17 @@
 
             for(let i=0; i<this.comicPages[0].frames.length; i++){
               if(this.judgeInclusion(x, y, this.comicPages[0].frames[i].points)){
-                this.readingFrame = i;
+                // this.readingFrame = i;
                 // 新しいコマを読んだ時
-                if(this.readedFrame + 1 == this.readingFrame){
-                  this.readedFrame = this.readingFrame;
-                  this.comicPages[0].frames[i].sound?.play();
+                // if(this.readedFrame + 1 == this.readingFrame){
+                  // this.readedFrame = this.readingFrame;
+                if (this.comicPages[0].frames[i].sound != null) {
+                  if (this.comicPages[0].frames[i].isSoundPlaying == false) {
+                    this.comicPages[0].frames[i].isSoundPlaying = true
+                    this.comicPages[0].frames[i].sound.play();
+                  }
                 }
+                // }
               }
             }
 
