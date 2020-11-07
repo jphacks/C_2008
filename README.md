@@ -123,7 +123,7 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * vue.js
 * 学習済みFacemeshモデル
 * EfficientNet
-<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png" width="300">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png">
 
 ### デバイス
 * PCに内蔵カメラまたはWebカメラがあれば利用できます
