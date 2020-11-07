@@ -141,6 +141,7 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * 効果音素材：ポケットサウンド – [https://pocket-se.info/](https://pocket-se.info/)
 * ニコニ・コモンズ
 * 音楽：魔王魂
+* マンガ素材：ブラックジャックによろしく　無料素材集 [https://www.tadapic.com/blackjack.php](https://www.tadapic.com/blackjack.php)
 
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/paka.png" width="150">
 
