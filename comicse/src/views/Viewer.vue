@@ -21,7 +21,7 @@
         viewerCanvas: null,
         viewerCanvasContext: null,
         // ビューアーのスケールです. 1が等倍です.
-        viewerScale: 0.8,
+        viewerScale: 1,
         window: {
           width: null,
           height: null
@@ -282,7 +282,7 @@
           this.viewerPadding.left, this.viewerPadding.top, this.viewerPadding.width, this.viewerPadding.height)
 
         // コマを薄く表示する
-        this.viewerCanvasContext.fillStyle = '#0000cd80'
+        this.viewerCanvasContext.fillStyle = '#0000cd10'
         for (let frame of comicPage.frames) {
 
           this.viewerCanvasContext.beginPath()
