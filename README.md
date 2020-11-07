@@ -1,6 +1,6 @@
 # コミックSE
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
+[![コミックSE(youtubeへのリンク)](https://github.com/jphacks/C_2008/blob/master/readme_resources/youtube_top.png)](https://youtu.be/HroNiTiMmJw)
 
 ## 漫画 × Tech
 
@@ -125,6 +125,8 @@ tensorflow.jsを用い、WebGLをバックエンドに採用しています.
 * EfficientNet
 * Let's encrypt（webカメラがhttp通信で動作しないためhttps通信化）
 <img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/architecture.png">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/getEyes.png">
+<img src="https://github.com/jphacks/C_2008/blob/master/readme_resources/cnn.png">
 
 ### デバイス
 * PCに内蔵カメラまたはWebカメラがあれば利用できます
