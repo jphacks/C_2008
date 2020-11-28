@@ -25,6 +25,7 @@
 ### デモ
 **スマートフォンではなく，PCからご利用ください．**
 [https://comic-se.work/](https://comic-se.work/)
+ or [https://d2qm7abk9t2wyj.cloudfront.net/](https://d2qm7abk9t2wyj.cloudfront.net/)
 
 ### 背景
 電子書籍が増えてきました.  
